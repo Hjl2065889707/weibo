@@ -6,6 +6,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "HomePageTableViewController.h"
+#import "MessagePageTableViewController.h"
+#import "MyPageViewController.h"
+#import "FindPageTableViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

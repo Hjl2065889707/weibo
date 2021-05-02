@@ -7,19 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		E1184F1F263C52AA0094F110 /* FindPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1184F1E263C52AA0094F110 /* FindPageViewController.m */; };
 		E14245AF263BBC5D00DCFF3B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E14245AE263BBC5D00DCFF3B /* AppDelegate.m */; };
 		E14245BA263BBC5E00DCFF3B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E14245B9263BBC5E00DCFF3B /* Assets.xcassets */; };
 		E14245C0263BBC5E00DCFF3B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E14245BF263BBC5E00DCFF3B /* main.m */; };
 		E14245C9263BBC8600DCFF3B /* TabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = E14245C8263BBC8600DCFF3B /* TabBarController.m */; };
-		E14245D2263C313300DCFF3B /* HomePageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E14245D1263C313300DCFF3B /* HomePageViewController.m */; };
 		E14245D6263C315100DCFF3B /* MyPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E14245D5263C315100DCFF3B /* MyPageViewController.m */; };
-		E14245DA263C317E00DCFF3B /* RecommendPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E14245D9263C317E00DCFF3B /* RecommendPageViewController.m */; };
+		E1DA8C8D263E91DB00C78485 /* HomePageTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1DA8C8C263E91DB00C78485 /* HomePageTableViewController.m */; };
+		E1DA8C9A263EBA2900C78485 /* FindPageTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1DA8C99263EBA2900C78485 /* FindPageTableViewController.m */; };
+		E1DA8C9D263EBA8C00C78485 /* MessagePageTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1DA8C9C263EBA8C00C78485 /* MessagePageTableViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		E1184F1D263C52AA0094F110 /* FindPageViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FindPageViewController.h; sourceTree = "<group>"; };
-		E1184F1E263C52AA0094F110 /* FindPageViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FindPageViewController.m; sourceTree = "<group>"; };
 		E14245AA263BBC5D00DCFF3B /* weibo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = weibo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E14245AD263BBC5D00DCFF3B /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		E14245AE263BBC5D00DCFF3B /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -28,12 +26,14 @@
 		E14245BF263BBC5E00DCFF3B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		E14245C7263BBC8600DCFF3B /* TabBarController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TabBarController.h; sourceTree = "<group>"; };
 		E14245C8263BBC8600DCFF3B /* TabBarController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TabBarController.m; sourceTree = "<group>"; };
-		E14245D0263C313300DCFF3B /* HomePageViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HomePageViewController.h; sourceTree = "<group>"; };
-		E14245D1263C313300DCFF3B /* HomePageViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HomePageViewController.m; sourceTree = "<group>"; };
 		E14245D4263C315100DCFF3B /* MyPageViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MyPageViewController.h; sourceTree = "<group>"; };
 		E14245D5263C315100DCFF3B /* MyPageViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MyPageViewController.m; sourceTree = "<group>"; };
-		E14245D8263C317E00DCFF3B /* RecommendPageViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RecommendPageViewController.h; sourceTree = "<group>"; };
-		E14245D9263C317E00DCFF3B /* RecommendPageViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RecommendPageViewController.m; sourceTree = "<group>"; };
+		E1DA8C8B263E91DB00C78485 /* HomePageTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HomePageTableViewController.h; sourceTree = "<group>"; };
+		E1DA8C8C263E91DB00C78485 /* HomePageTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HomePageTableViewController.m; sourceTree = "<group>"; };
+		E1DA8C98263EBA2900C78485 /* FindPageTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FindPageTableViewController.h; sourceTree = "<group>"; };
+		E1DA8C99263EBA2900C78485 /* FindPageTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FindPageTableViewController.m; sourceTree = "<group>"; };
+		E1DA8C9B263EBA8C00C78485 /* MessagePageTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MessagePageTableViewController.h; sourceTree = "<group>"; };
+		E1DA8C9C263EBA8C00C78485 /* MessagePageTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MessagePageTableViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,12 +70,12 @@
 				E14245AE263BBC5D00DCFF3B /* AppDelegate.m */,
 				E14245C7263BBC8600DCFF3B /* TabBarController.h */,
 				E14245C8263BBC8600DCFF3B /* TabBarController.m */,
-				E14245D0263C313300DCFF3B /* HomePageViewController.h */,
-				E14245D1263C313300DCFF3B /* HomePageViewController.m */,
-				E14245D8263C317E00DCFF3B /* RecommendPageViewController.h */,
-				E14245D9263C317E00DCFF3B /* RecommendPageViewController.m */,
-				E1184F1D263C52AA0094F110 /* FindPageViewController.h */,
-				E1184F1E263C52AA0094F110 /* FindPageViewController.m */,
+				E1DA8C8B263E91DB00C78485 /* HomePageTableViewController.h */,
+				E1DA8C8C263E91DB00C78485 /* HomePageTableViewController.m */,
+				E1DA8C98263EBA2900C78485 /* FindPageTableViewController.h */,
+				E1DA8C99263EBA2900C78485 /* FindPageTableViewController.m */,
+				E1DA8C9B263EBA8C00C78485 /* MessagePageTableViewController.h */,
+				E1DA8C9C263EBA8C00C78485 /* MessagePageTableViewController.m */,
 				E14245D4263C315100DCFF3B /* MyPageViewController.h */,
 				E14245D5263C315100DCFF3B /* MyPageViewController.m */,
 				E14245B9263BBC5E00DCFF3B /* Assets.xcassets */,
@@ -152,12 +152,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E1DA8C9D263EBA8C00C78485 /* MessagePageTableViewController.m in Sources */,
 				E14245D6263C315100DCFF3B /* MyPageViewController.m in Sources */,
-				E14245D2263C313300DCFF3B /* HomePageViewController.m in Sources */,
-				E1184F1F263C52AA0094F110 /* FindPageViewController.m in Sources */,
-				E14245DA263C317E00DCFF3B /* RecommendPageViewController.m in Sources */,
+				E1DA8C8D263E91DB00C78485 /* HomePageTableViewController.m in Sources */,
 				E14245AF263BBC5D00DCFF3B /* AppDelegate.m in Sources */,
 				E14245C9263BBC8600DCFF3B /* TabBarController.m in Sources */,
+				E1DA8C9A263EBA2900C78485 /* FindPageTableViewController.m in Sources */,
 				E14245C0263BBC5E00DCFF3B /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
