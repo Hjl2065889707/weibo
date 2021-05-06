@@ -15,7 +15,10 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
+    //打开调试模式(便于输出调试信息
+    [WeiboSDK enableDebugMode:YES];
+    //注册 appkey(clientid)和 universalLink
+    [WeiboSDK registerApp:kAppKey universalLink:@"https://applink.com"];
     //创建主窗口
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     self.window.backgroundColor = [UIColor whiteColor];
@@ -24,7 +27,6 @@
     [self.window makeKeyAndVisible];
     return YES;
 }
-
 
 
 

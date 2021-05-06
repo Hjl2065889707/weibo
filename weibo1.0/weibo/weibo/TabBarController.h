@@ -10,6 +10,7 @@
 #import "MessagePageTableViewController.h"
 #import "MyPageViewController.h"
 #import "FindPageTableViewController.h"
+#import "LoginViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
