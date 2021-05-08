@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		E107B7752643E7DE003F71D9 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E107B7742643E7DE003F71D9 /* LoginViewController.m */; };
 		E107B7812643F6C4003F71D9 /* WeiboSDK.bundle in Resources */ = {isa = PBXBuildFile; fileRef = E107B77D2643F6C4003F71D9 /* WeiboSDK.bundle */; };
-		E107B7822643F6C4003F71D9 /* libWeiboSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E107B77E2643F6C4003F71D9 /* libWeiboSDK.a */; };
 		E107B7852643FA1F003F71D9 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E107B7842643FA1F003F71D9 /* QuartzCore.framework */; };
 		E107B7872643FA27003F71D9 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E107B7862643FA27003F71D9 /* ImageIO.framework */; };
 		E107B7892643FA35003F71D9 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E107B7882643FA35003F71D9 /* SystemConfiguration.framework */; };
@@ -22,6 +21,11 @@
 		E107B7972643FA97003F71D9 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E107B7962643FA97003F71D9 /* libsqlite3.tbd */; };
 		E107B7992643FAA3003F71D9 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E107B7982643FAA3003F71D9 /* libz.tbd */; };
 		E107B79B2643FAAD003F71D9 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E107B79A2643FAAD003F71D9 /* WebKit.framework */; };
+		E132731D2646E47E0017ACF1 /* WeiboSDK.bundle in Sources */ = {isa = PBXBuildFile; fileRef = E107B77D2643F6C4003F71D9 /* WeiboSDK.bundle */; };
+		E132731E2646E47E0017ACF1 /* libWeiboSDK.a in Sources */ = {isa = PBXBuildFile; fileRef = E107B77E2643F6C4003F71D9 /* libWeiboSDK.a */; };
+		E132731F2646E47E0017ACF1 /* WBHttpRequest.h in Sources */ = {isa = PBXBuildFile; fileRef = E107B77F2643F6C4003F71D9 /* WBHttpRequest.h */; };
+		E13273202646E47E0017ACF1 /* WeiboSDK.h in Sources */ = {isa = PBXBuildFile; fileRef = E107B7802643F6C4003F71D9 /* WeiboSDK.h */; };
+		E13273212646E5420017ACF1 /* libWeiboSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E107B77E2643F6C4003F71D9 /* libWeiboSDK.a */; };
 		E14245AF263BBC5D00DCFF3B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E14245AE263BBC5D00DCFF3B /* AppDelegate.m */; };
 		E14245BA263BBC5E00DCFF3B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E14245B9263BBC5E00DCFF3B /* Assets.xcassets */; };
 		E14245C0263BBC5E00DCFF3B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E14245BF263BBC5E00DCFF3B /* main.m */; };
@@ -52,6 +56,7 @@
 		E107B7982643FAA3003F71D9 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		E107B79A2643FAAD003F71D9 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		E107B79D26440B24003F71D9 /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
+		E13273222646E6960017ACF1 /* weibo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = weibo.entitlements; sourceTree = "<group>"; };
 		E14245AA263BBC5D00DCFF3B /* weibo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = weibo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E14245AD263BBC5D00DCFF3B /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		E14245AE263BBC5D00DCFF3B /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -80,6 +85,7 @@
 				E107B7972643FA97003F71D9 /* libsqlite3.tbd in Frameworks */,
 				E107B7952643FA6B003F71D9 /* CoreGraphics.framework in Frameworks */,
 				E107B7932643FA62003F71D9 /* Foundation.framework in Frameworks */,
+				E13273212646E5420017ACF1 /* libWeiboSDK.a in Frameworks */,
 				E107B7912643FA55003F71D9 /* UIKit.framework in Frameworks */,
 				E107B78F2643FA4E003F71D9 /* CoreText.framework in Frameworks */,
 				E107B78D2643FA46003F71D9 /* CoreTelephony.framework in Frameworks */,
@@ -87,7 +93,6 @@
 				E107B7892643FA35003F71D9 /* SystemConfiguration.framework in Frameworks */,
 				E107B7872643FA27003F71D9 /* ImageIO.framework in Frameworks */,
 				E107B7852643FA1F003F71D9 /* QuartzCore.framework in Frameworks */,
-				E107B7822643F6C4003F71D9 /* libWeiboSDK.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -135,6 +140,7 @@
 		E14245A1263BBC5D00DCFF3B = {
 			isa = PBXGroup;
 			children = (
+				E107B77C2643F6C4003F71D9 /* libWeiboSDK */,
 				E14245AC263BBC5D00DCFF3B /* weibo */,
 				E14245AB263BBC5D00DCFF3B /* Products */,
 				E107B7832643FA1F003F71D9 /* Frameworks */,
@@ -152,6 +158,7 @@
 		E14245AC263BBC5D00DCFF3B /* weibo */ = {
 			isa = PBXGroup;
 			children = (
+				E13273222646E6960017ACF1 /* weibo.entitlements */,
 				E14245AD263BBC5D00DCFF3B /* AppDelegate.h */,
 				E14245AE263BBC5D00DCFF3B /* AppDelegate.m */,
 				E14245C7263BBC8600DCFF3B /* TabBarController.h */,
@@ -170,7 +177,6 @@
 				E14245BE263BBC5E00DCFF3B /* Info.plist */,
 				E14245BF263BBC5E00DCFF3B /* main.m */,
 				E107B79C26440AB8003F71D9 /* Supporting Files */,
-				E107B77C2643F6C4003F71D9 /* libWeiboSDK */,
 			);
 			path = weibo;
 			sourceTree = "<group>";
@@ -243,6 +249,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E132731D2646E47E0017ACF1 /* WeiboSDK.bundle in Sources */,
+				E132731E2646E47E0017ACF1 /* libWeiboSDK.a in Sources */,
+				E132731F2646E47E0017ACF1 /* WBHttpRequest.h in Sources */,
+				E13273202646E47E0017ACF1 /* WeiboSDK.h in Sources */,
 				E107B7752643E7DE003F71D9 /* LoginViewController.m in Sources */,
 				E1DA8C9D263EBA8C00C78485 /* MessagePageTableViewController.m in Sources */,
 				E14245D6263C315100DCFF3B /* MyPageViewController.m in Sources */,
@@ -374,18 +384,17 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = weibo/weibo.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/weibo/Supporting Files/PrefixHeader.pch";
 				INFOPLIST_FILE = weibo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/weibo/libWeiboSDK",
-				);
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/libWeiboSDK";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.hjl.weibo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -398,18 +407,17 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = weibo/weibo.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/weibo/Supporting Files/PrefixHeader.pch";
 				INFOPLIST_FILE = weibo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/weibo/libWeiboSDK",
-				);
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/libWeiboSDK";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.hjl.weibo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
