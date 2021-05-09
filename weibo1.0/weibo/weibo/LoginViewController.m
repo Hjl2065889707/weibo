@@ -51,6 +51,11 @@
     
 }
 
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];//页面消失的时候销毁观察者
+    
+}
 
 //#pragma mark SSO Authorization
 //- (void)ssoButtonPressed
@@ -108,6 +113,8 @@
         NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
             NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
             self.token = [dic valueForKey:@"access_token"];
+            AccessToken *token = [[AccessToken alloc] init];
+            token.access_token = self.token;
             NSLog(@"token = %@",self.token);
         }];
         [dataTask resume];

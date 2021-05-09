@@ -16,11 +16,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
-    HomePageTableViewController *homePageTableViewController = [ [HomePageTableViewController alloc] init];
-    homePageTableViewController.tabBarItem.title = @"主页";
-    homePageTableViewController.tabBarItem.image = [UIImage imageNamed:@"home.png"];
-    homePageTableViewController.tabBarItem.selectedImage = [UIImage imageNamed:@"home-fill.png"];
-    [self addChildViewController:homePageTableViewController];
+    
+    UINavigationController *homePageNavigationController = [[UINavigationController alloc] initWithRootViewController:[ [HomePageTableViewController alloc] init] ];
+    homePageNavigationController.tabBarItem.title = @"主页";
+    homePageNavigationController.tabBarItem.image = [UIImage imageNamed:@"home.png"];
+    homePageNavigationController.tabBarItem.selectedImage = [UIImage imageNamed:@"home-fill.png"];
+    [self addChildViewController:homePageNavigationController];
     
     FindPageTableViewController *findPageTableViewController = [[FindPageTableViewController alloc] init];
     findPageTableViewController.tabBarItem.title = @"发现";

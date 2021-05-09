@@ -6,7 +6,8 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "AccessToken.h"
+#import "TheWbData.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface HomePageTableViewController : UITableViewController

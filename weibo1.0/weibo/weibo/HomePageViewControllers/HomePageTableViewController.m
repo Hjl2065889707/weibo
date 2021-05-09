@@ -15,12 +15,11 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.tabBarItem.title = @"首页";
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
     
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    UIBarButtonItem *postButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"post.png"] style:UIBarButtonItemStyleDone target:self action:@selector(postWB)];
+    
+
+    self.navigationItem.rightBarButtonItem = postButton;
 }
 
 #pragma mark - Table view data source
@@ -79,14 +78,45 @@
 }
 */
 
-/*
-#pragma mark - Navigation
+- (void)postWB
+{
+    
+    NSLog(@"post");
+    AccessToken *token = [[AccessToken alloc] init];
+    NSLog(@"%@",token.access_token);
+    NSURLSession *session = [NSURLSession sharedSession];//创建会话对象
+    NSString *urlString = [NSString stringWithFormat:@"https://api.weibo.com/2/statuses/home_timeline.json?access_token=%@",token.access_token];
+    NSURL *url = [NSURL URLWithString:urlString];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
+        
+        
+        NSArray *statuesArray = [dic valueForKey:@"statuses"];
+        NSMutableArray *dataArray = [[NSMutableArray alloc] init];
+        for(NSDictionary *dic in statuesArray)
+        {
+            TheWbData *theWBData = [[TheWbData alloc] init];
+            theWBData.name = [[dic valueForKey:@"user"] valueForKey:@"name"];
+            theWBData.profileImageURL = [[dic valueForKey:@"user"] valueForKey:@"profile_image_url"];
+            theWBData.creatTime = [dic valueForKey:@"creat_at"];
+            theWBData.location = [[dic valueForKey:@"user"] valueForKey:@"location"];
+            theWBData.text = [dic valueForKey:@"text"];
+            theWBData.pictureNumber = [dic valueForKey:@"pic_num"];
+            theWBData.pictureURLs = [dic valueForKey:@"pic_urls"];
+            theWBData.attitudesCount = [dic valueForKey:@"attitudes_count"];
+            theWBData.commentsCount = [dic valueForKey:@"comments_count"];
+            theWBData.repostsCount = [dic valueForKey:@"reposts_count"];
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+            [dataArray addObject:theWBData];
+            
+        }//将传回的数据转换为theWBData对象并存入数组
+
+        NSLog(@"%lu",dataArray.count);
+        
+    }];
+
+    [dataTask resume];
 }
-*/
 
 @end

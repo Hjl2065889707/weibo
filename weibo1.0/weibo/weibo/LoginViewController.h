@@ -8,6 +8,7 @@
 #import <UIKit/UIKit.h>
 #import "WeiboSDK.h"
 #import <WebKit/WebKit.h>
+#import "AccessToken.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface LoginViewController : UIViewController<WeiboSDKDelegate,WKUIDelegate,WKNavigationDelegate>
