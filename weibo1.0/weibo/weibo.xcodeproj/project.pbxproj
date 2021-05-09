@@ -33,6 +33,7 @@
 		E14245D6263C315100DCFF3B /* MyPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E14245D5263C315100DCFF3B /* MyPageViewController.m */; };
 		E1D274FC26480568004EC053 /* AccessToken.m in Sources */ = {isa = PBXBuildFile; fileRef = E1D274FB26480568004EC053 /* AccessToken.m */; };
 		E1D2750026482989004EC053 /* TheWbData.m in Sources */ = {isa = PBXBuildFile; fileRef = E1D274FF26482989004EC053 /* TheWbData.m */; };
+		E1D2750326483E92004EC053 /* PostWBViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1D2750226483E92004EC053 /* PostWBViewController.m */; };
 		E1DA8C8D263E91DB00C78485 /* HomePageTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1DA8C8C263E91DB00C78485 /* HomePageTableViewController.m */; };
 		E1DA8C9A263EBA2900C78485 /* FindPageTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1DA8C99263EBA2900C78485 /* FindPageTableViewController.m */; };
 		E1DA8C9D263EBA8C00C78485 /* MessagePageTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1DA8C9C263EBA8C00C78485 /* MessagePageTableViewController.m */; };
@@ -73,6 +74,8 @@
 		E1D274FB26480568004EC053 /* AccessToken.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AccessToken.m; sourceTree = "<group>"; };
 		E1D274FE26482989004EC053 /* TheWbData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TheWbData.h; sourceTree = "<group>"; };
 		E1D274FF26482989004EC053 /* TheWbData.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TheWbData.m; sourceTree = "<group>"; };
+		E1D2750126483E92004EC053 /* PostWBViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PostWBViewController.h; sourceTree = "<group>"; };
+		E1D2750226483E92004EC053 /* PostWBViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PostWBViewController.m; sourceTree = "<group>"; };
 		E1DA8C8B263E91DB00C78485 /* HomePageTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HomePageTableViewController.h; sourceTree = "<group>"; };
 		E1DA8C8C263E91DB00C78485 /* HomePageTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HomePageTableViewController.m; sourceTree = "<group>"; };
 		E1DA8C98263EBA2900C78485 /* FindPageTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FindPageTableViewController.h; sourceTree = "<group>"; };
@@ -191,6 +194,8 @@
 			children = (
 				E1DA8C8B263E91DB00C78485 /* HomePageTableViewController.h */,
 				E1DA8C8C263E91DB00C78485 /* HomePageTableViewController.m */,
+				E1D2750126483E92004EC053 /* PostWBViewController.h */,
+				E1D2750226483E92004EC053 /* PostWBViewController.m */,
 			);
 			path = HomePageViewControllers;
 			sourceTree = "<group>";
@@ -300,6 +305,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E132731D2646E47E0017ACF1 /* WeiboSDK.bundle in Sources */,
+				E1D2750326483E92004EC053 /* PostWBViewController.m in Sources */,
 				E132731E2646E47E0017ACF1 /* libWeiboSDK.a in Sources */,
 				E1D274FC26480568004EC053 /* AccessToken.m in Sources */,
 				E132731F2646E47E0017ACF1 /* WBHttpRequest.h in Sources */,

@@ -7,8 +7,8 @@
 
 #import "HomePageTableViewController.h"
 
-@interface HomePageTableViewController ()
-
+@interface HomePageTableViewController ()<UITableViewDelegate,UITableViewDataSource>
+@property(strong,nonatomic)NSMutableArray *dataArray;
 @end
 
 @implementation HomePageTableViewController
@@ -18,70 +18,57 @@
     
     UIBarButtonItem *postButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"post.png"] style:UIBarButtonItemStyleDone target:self action:@selector(postWB)];
     
-
+    UIBarButtonItem *reloadButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"reload.png"] style:UIBarButtonItemStyleDone target:self action:@selector(reloadWB)];
+    self.navigationItem.leftBarButtonItem = reloadButton;
     self.navigationItem.rightBarButtonItem = postButton;
 }
 
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-#warning Incomplete implementation, return the number of sections
-    return 0;
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-#warning Incomplete implementation, return the number of rows
-    return 0;
+    return self.dataArray.count;
 }
 
-/*
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:<#@"reuseIdentifier"#> forIndexPath:indexPath];
+
+-(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"id"];//从复用回收池中取cell
+    if(!cell){//如果取不到就让cell=新建cell
+        cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"id"];
+    }
+    TheWbData *theWBData = self.dataArray[indexPath.row];
     
-    // Configure the cell...
+    cell.textLabel.text = theWBData.name;
+    cell.detailTextLabel.text = theWBData.text;
+    NSData *headPictureData = [NSData dataWithContentsOfURL:[NSURL URLWithString:theWBData.profileImageURL]];
+    cell.imageView.image = [UIImage imageWithData:headPictureData];  //设置头像
     
+//    if(theWBData.pictureNumber != 0){
+//        NSLog(@"存在图片");
+//    }
+    cell.textLabel.font = [UIFont systemFontOfSize:20];//设置textLable字体大小
+    cell.detailTextLabel.font = [UIFont systemFontOfSize:15];//设置副标题字体大小
     return cell;
 }
-*/
 
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 80;//设置cell的高度
 }
-*/
 
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
 
 - (void)postWB
 {
-    
     NSLog(@"post");
+    [self.tableView reloadData];
+}
+
+- (void)reloadWB
+{
     AccessToken *token = [[AccessToken alloc] init];
     NSLog(@"%@",token.access_token);
     NSURLSession *session = [NSURLSession sharedSession];//创建会话对象
@@ -90,33 +77,22 @@
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
-        
-        
         NSArray *statuesArray = [dic valueForKey:@"statuses"];
         NSMutableArray *dataArray = [[NSMutableArray alloc] init];
         for(NSDictionary *dic in statuesArray)
         {
             TheWbData *theWBData = [[TheWbData alloc] init];
-            theWBData.name = [[dic valueForKey:@"user"] valueForKey:@"name"];
-            theWBData.profileImageURL = [[dic valueForKey:@"user"] valueForKey:@"profile_image_url"];
-            theWBData.creatTime = [dic valueForKey:@"creat_at"];
-            theWBData.location = [[dic valueForKey:@"user"] valueForKey:@"location"];
-            theWBData.text = [dic valueForKey:@"text"];
-            theWBData.pictureNumber = [dic valueForKey:@"pic_num"];
-            theWBData.pictureURLs = [dic valueForKey:@"pic_urls"];
-            theWBData.attitudesCount = [dic valueForKey:@"attitudes_count"];
-            theWBData.commentsCount = [dic valueForKey:@"comments_count"];
-            theWBData.repostsCount = [dic valueForKey:@"reposts_count"];
-
+            [theWBData initWithDictionary:dic];
             [dataArray addObject:theWBData];
-            
         }//将传回的数据转换为theWBData对象并存入数组
 
         NSLog(@"%lu",dataArray.count);
+        self.dataArray = dataArray;
         
     }];
 
     [dataTask resume];
 }
+
 
 @end

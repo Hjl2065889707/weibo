@@ -21,6 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(strong,nonatomic)NSNumber *commentsCount;
 @property(strong,nonatomic)NSArray *pictureURLs;
 
+- (void)initWithDictionary:(NSDictionary *)dic;
 @end
 
 NS_ASSUME_NONNULL_END
