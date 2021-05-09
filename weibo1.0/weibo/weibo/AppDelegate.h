@@ -10,8 +10,13 @@
 #import "WeiboSDK.h"
 #import "WBHttpRequest.h"
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate,WeiboSDKDelegate>
+
 @property (strong,nonatomic)UIWindow *window;
+@property (strong, nonatomic) NSString *wbtoken;
+@property (strong, nonatomic) NSString *wbRefreshToken;
+@property (strong, nonatomic) NSString *wbCurrentUserID;
+
 
 @end
 
