@@ -8,6 +8,7 @@
 #import "PostWBViewController.h"
 
 @interface PostWBViewController ()
+@property(strong,nonatomic)UITextView *textView;
 
 @end
 
@@ -15,7 +16,12 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    
+    _textView = [[UITextView alloc] init];
+    _textView.frame = CGRectMake(20, 150, 300, 300);
+    _textView.backgroundColor = [UIColor redColor];
+    [self.view addSubview:_textView];
+    
 }
 
 /*

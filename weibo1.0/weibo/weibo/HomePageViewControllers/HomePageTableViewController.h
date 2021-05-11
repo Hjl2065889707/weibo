@@ -8,6 +8,8 @@
 #import <UIKit/UIKit.h>
 #import "AccessToken.h"
 #import "TheWbData.h"
+#import "WBCell.h"
+#import "PostWBViewController.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface HomePageTableViewController : UITableViewController

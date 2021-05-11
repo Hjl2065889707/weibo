@@ -6,7 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
-
+#import <UIKit/UIKit.h>
 NS_ASSUME_NONNULL_BEGIN
 
 @interface TheWbData : NSObject
@@ -15,10 +15,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property(strong,nonatomic)NSString *location;
 @property(strong,nonatomic)NSString *text;
 @property(strong,nonatomic)NSString *creatTime;
+@property(strong,nonatomic)NSString *originalPictureURL;
 @property(strong,nonatomic)NSNumber *pictureNumber;
 @property(strong,nonatomic)NSNumber *attitudesCount;
 @property(strong,nonatomic)NSNumber *repostsCount;
 @property(strong,nonatomic)NSNumber *commentsCount;
+@property(strong,nonatomic)NSNumber *userId;
 @property(strong,nonatomic)NSArray *pictureURLs;
 
 - (void)initWithDictionary:(NSDictionary *)dic;

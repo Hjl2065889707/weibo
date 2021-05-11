@@ -23,24 +23,23 @@
     homePageNavigationController.tabBarItem.selectedImage = [UIImage imageNamed:@"home-fill.png"];
     [self addChildViewController:homePageNavigationController];
     
-    FindPageTableViewController *findPageTableViewController = [[FindPageTableViewController alloc] init];
-    findPageTableViewController.tabBarItem.title = @"发现";
-    findPageTableViewController.tabBarItem.image = [UIImage imageNamed:@"find.png"];
-    findPageTableViewController.tabBarItem.selectedImage = [UIImage imageNamed:@"find-fill.png"];
-    [self addChildViewController:findPageTableViewController];
+    UINavigationController *findPageNavigationController = [[UINavigationController alloc] initWithRootViewController:[ [FindPageTableViewController alloc] init] ];
+    findPageNavigationController.tabBarItem.title = @"发现";
+    findPageNavigationController.tabBarItem.image = [UIImage imageNamed:@"find.png"];
+    findPageNavigationController.tabBarItem.selectedImage = [UIImage imageNamed:@"find-fill.png"];
+    [self addChildViewController:findPageNavigationController];
     
+    UINavigationController *messagePageNavigationController = [[UINavigationController alloc] initWithRootViewController:[ [MessagePageTableViewController alloc] init] ];
+    messagePageNavigationController.tabBarItem.title = @"消息";
+    messagePageNavigationController.tabBarItem.image = [UIImage imageNamed:@"message.png"];
+    messagePageNavigationController.tabBarItem.selectedImage = [UIImage imageNamed:@"message-fill.png"];
+    [self addChildViewController:messagePageNavigationController];
     
-    MessagePageTableViewController *messagePageTableViewController = [[MessagePageTableViewController alloc] init];
-    messagePageTableViewController.tabBarItem.title = @"消息";
-    messagePageTableViewController.tabBarItem.image = [UIImage imageNamed:@"message.png"];
-    messagePageTableViewController.tabBarItem.selectedImage = [UIImage imageNamed:@"message-fill.png"];
-    [self addChildViewController:messagePageTableViewController];
-    
-    MyPageViewController *myPageViewController = [[MyPageViewController alloc] init];
-    myPageViewController.tabBarItem.title = @"我";
-    myPageViewController.tabBarItem.image = [UIImage imageNamed:@"my.png"];
-    myPageViewController.tabBarItem.selectedImage = [UIImage imageNamed:@"my-fill.png"];
-    [self addChildViewController:myPageViewController];
+    UINavigationController *myPageNavigationController = [[UINavigationController alloc] initWithRootViewController:[ [MyPageViewController alloc] init] ];
+    myPageNavigationController.tabBarItem.title = @"我";
+    myPageNavigationController.tabBarItem.image = [UIImage imageNamed:@"my.png"];
+    myPageNavigationController.tabBarItem.selectedImage = [UIImage imageNamed:@"my-fill.png"];
+    [self addChildViewController:myPageNavigationController];
     
     LoginViewController *loginViewController = [[LoginViewController alloc] init];
     loginViewController.tabBarItem.title = @"登陆";

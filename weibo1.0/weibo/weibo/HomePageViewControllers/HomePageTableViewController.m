@@ -15,14 +15,20 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.tableView.delegate = self;
+    self.tableView.dataSource = self;
     
     UIBarButtonItem *postButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"post.png"] style:UIBarButtonItemStyleDone target:self action:@selector(postWB)];
     
-    UIBarButtonItem *reloadButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"reload.png"] style:UIBarButtonItemStyleDone target:self action:@selector(reloadWB)];
+    UIBarButtonItem *reloadButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"reload.png"] style:UIBarButtonItemStyleDone target:self action:@selector(reloadTableViewData)];
     self.navigationItem.leftBarButtonItem = reloadButton;
     self.navigationItem.rightBarButtonItem = postButton;
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [self reloadWBData];
+}
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -36,38 +42,43 @@
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"id"];//从复用回收池中取cell
+    WBCell *cell = [tableView dequeueReusableCellWithIdentifier:@"id"];//从复用回收池中取cell
     if(!cell){//如果取不到就让cell=新建cell
-        cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"id"];
+        cell = [[WBCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"id"];
     }
-    TheWbData *theWBData = self.dataArray[indexPath.row];
+    cell.theWBData = self.dataArray[indexPath.row];
     
-    cell.textLabel.text = theWBData.name;
-    cell.detailTextLabel.text = theWBData.text;
-    NSData *headPictureData = [NSData dataWithContentsOfURL:[NSURL URLWithString:theWBData.profileImageURL]];
-    cell.imageView.image = [UIImage imageWithData:headPictureData];  //设置头像
+    WBCellFrame *wbCellFrame = [[WBCellFrame alloc] init];
+    wbCellFrame.wbData = self.dataArray[indexPath.row];//该行可以初始化wbCellFrame的所有属性
+    cell.wbCellFrame = wbCellFrame;
     
-//    if(theWBData.pictureNumber != 0){
-//        NSLog(@"存在图片");
-//    }
-    cell.textLabel.font = [UIFont systemFontOfSize:20];//设置textLable字体大小
-    cell.detailTextLabel.font = [UIFont systemFontOfSize:15];//设置副标题字体大小
+    [cell initSubviews];
+    
+
     return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 80;//设置cell的高度
+    return 500;//设置cell的高度
 }
 
-
+#pragma mark - postWBMethod
 - (void)postWB
 {
-    NSLog(@"post");
+    PostWBViewController *postViewController = [[PostWBViewController alloc] init];
+    [self.navigationController pushViewController:postViewController animated:YES];
+}
+
+#pragma mark - DataMethod
+
+- (void)reloadTableViewData
+{
+    NSLog(@"reload");
     [self.tableView reloadData];
 }
 
-- (void)reloadWB
+- (void)reloadWBData
 {
     AccessToken *token = [[AccessToken alloc] init];
     NSLog(@"%@",token.access_token);
@@ -88,7 +99,7 @@
 
         NSLog(@"%lu",dataArray.count);
         self.dataArray = dataArray;
-        
+
     }];
 
     [dataTask resume];

@@ -113,6 +113,14 @@
         NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
             NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
             self.token = [dic valueForKey:@"access_token"];
+            
+            NSString *docPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
+            NSString *filePath = [NSString stringWithFormat:@"%@/accessToken.plist",docPath];
+            //获取文件路径
+            if ([self.token writeToFile:filePath atomically:NO encoding:NSUTF8StringEncoding error:nil]) {
+                NSLog(@"写入成功！！！");
+            }
+            
             AccessToken *token = [[AccessToken alloc] init];
             token.access_token = self.token;
             NSLog(@"token = %@",self.token);
