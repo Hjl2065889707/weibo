@@ -9,12 +9,20 @@
 
 @interface HomePageTableViewController ()<UITableViewDelegate,UITableViewDataSource>
 @property(strong,nonatomic)NSMutableArray *dataArray;
+@property(strong,nonatomic)WBCellFrame *wbCellFrame;
 @end
 
 @implementation HomePageTableViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    NSString *docPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
+    NSString *filePath = [NSString stringWithFormat:@"%@/accessToken.plist",docPath];
+    NSString *accessTokenString = [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:nil];
+    AccessToken *accessToken = [[AccessToken  alloc] init];
+    accessToken.access_token = accessTokenString;
+    
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     
@@ -46,26 +54,33 @@
     if(!cell){//如果取不到就让cell=新建cell
         cell = [[WBCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"id"];
     }
+    //移除cell里面的imageView
+    for(UIView *uv in cell.contentView.subviews){
+            [uv removeFromSuperview];
+    }
+    //设置cell被选中时不变灰
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    //设置theWBData
     cell.theWBData = self.dataArray[indexPath.row];
-    
-    WBCellFrame *wbCellFrame = [[WBCellFrame alloc] init];
-    wbCellFrame.wbData = self.dataArray[indexPath.row];//该行可以初始化wbCellFrame的所有属性
-    cell.wbCellFrame = wbCellFrame;
-    
+    //设置wbCellFrame
+    _wbCellFrame = [[WBCellFrame alloc] init];
+    _wbCellFrame.wbData = self.dataArray[indexPath.row];//该行可以初始化wbCellFrame的所有属性
+    cell.wbCellFrame = _wbCellFrame;
+    //创建cell的子view的
     [cell initSubviews];
-    
 
     return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 500;//设置cell的高度
+    return _wbCellFrame.attitudeTextViewFrame.origin.y+40;//设置cell的高度
 }
 
 #pragma mark - postWBMethod
 - (void)postWB
 {
+    //跳转到postWB界面
     PostWBViewController *postViewController = [[PostWBViewController alloc] init];
     [self.navigationController pushViewController:postViewController animated:YES];
 }

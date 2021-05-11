@@ -13,14 +13,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(strong,nonatomic)TheWbData *wbData;
 
-@property(assign,nonatomic)CGRect headImageViewFrame;
-@property(assign,nonatomic)CGRect nameTextViewFrame;
-@property(assign,nonatomic)CGRect mainTextViewFrame;
-@property(assign,nonatomic)CGRect timeTextViewFrame;
-@property(assign,nonatomic)CGRect mainImageViewFrame;
-@property(assign,nonatomic)CGRect commentTextViewFrame;
-@property(assign,nonatomic)CGRect attitudeTextViewFrame;
-@property(assign,nonatomic)CGRect repostTextViewFrame;
+@property(nonatomic)CGRect headImageViewFrame;
+@property(nonatomic)CGRect nameTextViewFrame;
+@property(nonatomic)CGRect mainTextViewFrame;
+@property(nonatomic)CGRect timeTextViewFrame;
+@property(nonatomic)CGRect mainImageViewFrame;
+@property(nonatomic)CGRect commentTextViewFrame;
+@property(nonatomic)CGRect attitudeTextViewFrame;
+@property(nonatomic)CGRect repostTextViewFrame;
 
 @end
 

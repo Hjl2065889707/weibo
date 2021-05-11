@@ -16,22 +16,26 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.view.backgroundColor = [UIColor whiteColor];
+    UIBarButtonItem *postButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"send.png"] style:UIBarButtonItemStyleDone target:self action:@selector(postButtonPressed)];
+    
+    self.navigationItem.rightBarButtonItem = postButton;
+
     
     _textView = [[UITextView alloc] init];
     _textView.frame = CGRectMake(20, 150, 300, 300);
+    _textView.font = [UIFont systemFontOfSize:25];
     _textView.backgroundColor = [UIColor redColor];
     [self.view addSubview:_textView];
     
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (void)postButtonPressed
+{
+    NSLog(@"post");
+    
 }
-*/
+
+
 
 @end

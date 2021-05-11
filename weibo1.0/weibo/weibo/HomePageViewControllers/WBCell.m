@@ -19,10 +19,7 @@
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
-    if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]){
-        [self initSubviews];
-    }
-    
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     return  self;
 }
 
@@ -33,18 +30,18 @@
     // Configure the view for the selected state
 }
 
-
+#pragma mark - initSubviews
 -(void)initSubviews
 {
     //头像图片
     NSData *headImageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:self.theWBData.profileImageURL]];
     UIImageView *headImageView = [ [UIImageView alloc] initWithImage:[UIImage imageWithData:headImageData] ];
-    headImageView.frame = CGRectMake(20, 20, 50, 50);
+    headImageView.frame = _wbCellFrame.headImageViewFrame;
     [self.contentView addSubview:headImageView];
     //昵称
     UITextView *nameTextView = [[UITextView alloc] init];
     nameTextView.text = self.theWBData.name;
-    nameTextView.frame = CGRectMake(100, 20, 200, 30);
+    nameTextView.frame = _wbCellFrame.nameTextViewFrame;
     nameTextView.editable = NO;
     nameTextView.scrollEnabled = NO;
     nameTextView.font = [UIFont fontWithName:@"Arial" size:18];
@@ -52,8 +49,7 @@
     //时间
     UITextView *timeTextView = [[UITextView alloc] init];
     timeTextView.text = self.theWBData.creatTime;
-    
-    timeTextView.frame = CGRectMake(100, 55, 200, 30);
+    timeTextView.frame = _wbCellFrame.timeTextViewFrame;
     timeTextView.editable = NO;
     timeTextView.scrollEnabled = NO;
     timeTextView.font = [UIFont fontWithName:@"Arial" size:16];
@@ -61,26 +57,22 @@
     //文字内容
     UITextView *mainTextView = [[UITextView alloc] init];
     mainTextView.text = self.theWBData.text;
-    mainTextView.frame = CGRectMake(20, 100, 300,100);
+    mainTextView.frame = _wbCellFrame.mainTextViewFrame;
     mainTextView.editable = NO;
     mainTextView.scrollEnabled = NO;
     mainTextView.font = [UIFont fontWithName:@"Arial" size:18];
     [self.contentView addSubview:mainTextView];
     //图片内容
-    if(self.pictureImageView){
-        [self.pictureImageView removeFromSuperview];
-    }
-    if (self.theWBData.pictureNumber != 0) {
-
+    if (self.theWBData.pictureNumber.intValue != 0) {
         NSData *pictureImageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:self.theWBData.originalPictureURL] ];
-        UIImageView *pictureImageView = [[UIImageView alloc] initWithImage:[[UIImage alloc] initWithData:pictureImageData]];
-        pictureImageView.frame = CGRectMake(20, 210, 210,210);
-        [self.contentView addSubview:pictureImageView];
+        _pictureImageView = [[UIImageView alloc] initWithImage:[[UIImage alloc] initWithData:pictureImageData]];
+        _pictureImageView.frame = _wbCellFrame.mainImageViewFrame;
+        [self.contentView addSubview:_pictureImageView];
     }
     //评论数
     UITextView *commentNumber = [[UITextView alloc] init];
     commentNumber.text = [NSString stringWithFormat:@"评论数：%@",self.theWBData.commentsCount];
-    commentNumber.frame = CGRectMake(130,450, 110, 30);
+    commentNumber.frame = _wbCellFrame.commentTextViewFrame;
     commentNumber.editable = NO;
     commentNumber.scrollEnabled = NO;
     commentNumber.font = [UIFont fontWithName:@"Arial" size:18];
@@ -88,7 +80,7 @@
     //转发数
     UITextView *repostsNumber = [[UITextView alloc] init];
     repostsNumber.text = [NSString stringWithFormat:@"转发数：%@",self.theWBData.repostsCount];
-    repostsNumber.frame = CGRectMake(10,450,110,30);
+    repostsNumber.frame = _wbCellFrame.repostTextViewFrame;
     repostsNumber.editable = NO;
     repostsNumber.scrollEnabled = NO;
     repostsNumber.font = [UIFont fontWithName:@"Arial" size:18];
@@ -96,7 +88,7 @@
     //点赞数
     UITextView *attitudeNumber = [[UITextView alloc] init];
     attitudeNumber.text = [NSString stringWithFormat:@"点赞数：%@",self.theWBData.attitudesCount];
-    attitudeNumber.frame = CGRectMake(250,450,110,30);
+    attitudeNumber.frame = _wbCellFrame.attitudeTextViewFrame;
     attitudeNumber.editable = NO;
     attitudeNumber.scrollEnabled = NO;
     attitudeNumber.font = [UIFont fontWithName:@"Arial" size:18];

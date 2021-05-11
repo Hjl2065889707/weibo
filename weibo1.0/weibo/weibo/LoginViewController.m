@@ -100,7 +100,7 @@
     
 }
 
-
+#pragma mark -监听WebView的url改变:获取access_token
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context
 {
 
@@ -109,7 +109,7 @@
         NSString *urlString = [NSString stringWithFormat:@"https://api.weibo.com/oauth2/access_token?client_id=2233344854&client_secret=08bb2e702d643ee1314bfec6d0c32bf3&grant_type=authorization_code&redirect_uri=https://api.weibo.com/oauth2/default.html&%@",self.webView.URL.query];
         NSURL *url = [NSURL URLWithString:urlString];
         NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-        [request setHTTPMethod:@"POST"];
+        [request setHTTPMethod:@"POST"];//设置请求的方法为POST方法
         NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
             NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
             self.token = [dic valueForKey:@"access_token"];
@@ -119,14 +119,14 @@
             //获取文件路径
             if ([self.token writeToFile:filePath atomically:NO encoding:NSUTF8StringEncoding error:nil]) {
                 NSLog(@"写入成功！！！");
-            }
+            }//保存accessToken到本地
             
             AccessToken *token = [[AccessToken alloc] init];
             token.access_token = self.token;
             NSLog(@"token = %@",self.token);
-        }];
-        [dataTask resume];
+        }];//创建一个dataTask
         
+        [dataTask resume];//执行任务
     }
 }
 
