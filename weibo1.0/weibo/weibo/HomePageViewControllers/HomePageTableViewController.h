@@ -11,6 +11,7 @@
 #import "WBCell.h"
 #import "PostWBViewController.h"
 #import "LoginViewController.h"
+#import "UserInformation.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface HomePageTableViewController : UITableViewController

@@ -21,13 +21,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.navigationController.navigationBar.hidden = YES;
 
     
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    self.navigationController.navigationBar.hidden = YES;
     [self loadWebView];
 }
 

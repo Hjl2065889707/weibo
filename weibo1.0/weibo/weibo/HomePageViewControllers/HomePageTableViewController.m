@@ -9,6 +9,8 @@
 
 @interface HomePageTableViewController ()<UITableViewDelegate,UITableViewDataSource>
 @property(strong,nonatomic)NSMutableArray *dataArray;
+@property(strong,nonatomic)NSMutableArray *browseHistoryArray;
+@property(strong,nonatomic)AccessToken *accessToken;
 @property(strong,nonatomic)WBCellFrame *wbCellFrame;
 @end
 
@@ -72,6 +74,32 @@
     return _wbCellFrame.attitudeTextViewFrame.origin.y+40;//设置cell的高度
 }
 
+//cell被选择时将其加入browseHistoryArray并保存到本地
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    UserInformation *userInformation = [[UserInformation alloc] init];
+    self.browseHistoryArray = [[NSMutableArray alloc] initWithContentsOfFile:userInformation.browseHistoryFilePath];
+    if (self.browseHistoryArray == nil) {
+            self.browseHistoryArray = [[NSMutableArray alloc] init];
+    }
+    TheWbData *wbData = self.dataArray[indexPath.row];
+    for (int i = 0;i<self.browseHistoryArray.count;i++) {
+        NSDictionary *dic = self.browseHistoryArray[i];
+        if ([wbData.creatTime isEqualToString:[dic valueForKey:@"created_at"]]) {
+            NSLog(@"%lu",(unsigned long)self.browseHistoryArray.count);
+            [self.browseHistoryArray removeObjectAtIndex:i];
+        }
+    }
+    //历史记录不超过50条
+    if (self.browseHistoryArray.count > 50) {
+        [self.browseHistoryArray removeObjectAtIndex:0];
+    }
+    [self.browseHistoryArray addObject:[TheWbData initDicitonaryWithTheWbData:wbData]];
+    NSArray *array = [[NSArray alloc] initWithArray:self.browseHistoryArray];
+    [array writeToFile:userInformation.browseHistoryFilePath atomically:NO];
+        
+        
+}
 #pragma mark - postWBMethod
 - (void)postWB
 {
@@ -92,10 +120,9 @@
 - (void)reloadWBData
 {
     [self initAndCheckAccessToken];
-    AccessToken *token = [[AccessToken alloc] init];
-    NSLog(@"%@",token.access_token);
+    NSLog(@"%@",self.accessToken.access_token);
     NSURLSession *session = [NSURLSession sharedSession];//创建会话对象
-    NSString *urlString = [NSString stringWithFormat:@"https://api.weibo.com/2/statuses/home_timeline.json?access_token=%@",token.access_token];
+    NSString *urlString = [NSString stringWithFormat:@"https://api.weibo.com/2/statuses/home_timeline.json?access_token=%@",self.accessToken.access_token];
     NSURL *url = [NSURL URLWithString:urlString];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
@@ -105,7 +132,7 @@
         for(NSDictionary *dic in statuesArray)
         {
             TheWbData *theWBData = [[TheWbData alloc] init];
-            [theWBData initWithDictionary:dic];
+            [theWBData initWithWebDictionary:dic];
             [dataArray addObject:theWBData];
         }//将传回的数据转换为theWBData对象并存入数组
 
@@ -126,17 +153,17 @@
 {
     //获取access_token
     NSString *docPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
-    NSString *filePath = [NSString stringWithFormat:@"%@/accessToken.plist",docPath];
-    NSString *accessTokenString = [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:nil];
-    AccessToken *accessToken = [[AccessToken  alloc] init];
-    accessToken.access_token = accessTokenString;
-    if (accessToken.access_token == nil) {
+    NSString *accessTokenFilePath = [NSString stringWithFormat:@"%@/accessToken.plist",docPath];
+    NSString *accessTokenString = [NSString stringWithContentsOfFile:accessTokenFilePath encoding:NSUTF8StringEncoding error:nil];
+    _accessToken = [[AccessToken  alloc] init];
+    _accessToken.access_token = accessTokenString;
+    if (_accessToken.access_token == nil) {
         [self.navigationController pushViewController:[[LoginViewController alloc] init] animated:YES];
         return;
     }
     
     NSURLSession *session = [NSURLSession sharedSession];//创建会话对象
-    NSString *urlString = [NSString stringWithFormat:@"https://api.weibo.com/oauth2/get_token_info?access_token=%@",accessToken.access_token];
+    NSString *urlString = [NSString stringWithFormat:@"https://api.weibo.com/oauth2/get_token_info?access_token=%@",_accessToken.access_token];
     NSURL *url = [NSURL URLWithString:urlString];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [request setHTTPMethod:@"POST"];//设置请求的方法为POST方法
@@ -145,18 +172,32 @@
         NSLog(@"%@",dic);
         if ([dic valueForKey:@"expire_in"] < 0 || [dic valueForKey:@"error"] != nil) {
             NSLog(@"该access_token已过期！");
-            
+            //同步回到主线程
             dispatch_sync(dispatch_get_main_queue(), ^{
-                //同步回到主线程
                 [self.navigationController pushViewController:[[LoginViewController alloc] init] animated:NO];
                     });
-
         }
+        [self initUserInformation];
     }];
 
     [dataTask resume];
 }
 
-
+- (void)initUserInformation
+{
+    UserInformation *userInformation = [[UserInformation alloc] init];
+    NSURLSession *session = [NSURLSession sharedSession];//创建会话对象
+    NSString *urlString = [NSString stringWithFormat:@"https://api.weibo.com/2/account/get_uid.json?access_token=%@",self.accessToken.access_token];
+    NSURL *url = [NSURL URLWithString:urlString];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
+        userInformation.userId = [dic valueForKey:@"uid"];
+        NSLog(@"userInformation = %@",userInformation);
+    }];
+    
+    [dataTask resume];
+    
+}
 
 @end

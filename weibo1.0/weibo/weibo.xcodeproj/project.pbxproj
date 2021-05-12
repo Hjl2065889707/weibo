@@ -31,6 +31,8 @@
 		E14245C0263BBC5E00DCFF3B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E14245BF263BBC5E00DCFF3B /* main.m */; };
 		E14245C9263BBC8600DCFF3B /* TabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = E14245C8263BBC8600DCFF3B /* TabBarController.m */; };
 		E14245D6263C315100DCFF3B /* MyPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E14245D5263C315100DCFF3B /* MyPageViewController.m */; };
+		E1434F85264C353900C21028 /* UserInformation.m in Sources */ = {isa = PBXBuildFile; fileRef = E1434F84264C353900C21028 /* UserInformation.m */; };
+		E1434F88264C3D2E00C21028 /* BrowseHistoryTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1434F87264C3D2E00C21028 /* BrowseHistoryTableViewController.m */; };
 		E1D274FC26480568004EC053 /* AccessToken.m in Sources */ = {isa = PBXBuildFile; fileRef = E1D274FB26480568004EC053 /* AccessToken.m */; };
 		E1D2750026482989004EC053 /* TheWbData.m in Sources */ = {isa = PBXBuildFile; fileRef = E1D274FF26482989004EC053 /* TheWbData.m */; };
 		E1D2750326483E92004EC053 /* PostWBViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1D2750226483E92004EC053 /* PostWBViewController.m */; };
@@ -74,6 +76,10 @@
 		E14245C8263BBC8600DCFF3B /* TabBarController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TabBarController.m; sourceTree = "<group>"; };
 		E14245D4263C315100DCFF3B /* MyPageViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MyPageViewController.h; sourceTree = "<group>"; };
 		E14245D5263C315100DCFF3B /* MyPageViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MyPageViewController.m; sourceTree = "<group>"; };
+		E1434F83264C353800C21028 /* UserInformation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserInformation.h; sourceTree = "<group>"; };
+		E1434F84264C353900C21028 /* UserInformation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UserInformation.m; sourceTree = "<group>"; };
+		E1434F86264C3D2E00C21028 /* BrowseHistoryTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BrowseHistoryTableViewController.h; sourceTree = "<group>"; };
+		E1434F87264C3D2E00C21028 /* BrowseHistoryTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BrowseHistoryTableViewController.m; sourceTree = "<group>"; };
 		E1D274FA26480568004EC053 /* AccessToken.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AccessToken.h; sourceTree = "<group>"; };
 		E1D274FB26480568004EC053 /* AccessToken.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AccessToken.m; sourceTree = "<group>"; };
 		E1D274FE26482989004EC053 /* TheWbData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TheWbData.h; sourceTree = "<group>"; };
@@ -189,8 +195,6 @@
 				E1D274F82647F776004EC053 /* MessagePageViewControllers */,
 				E1D274F92647F7A0004EC053 /* MyPageViewControllers */,
 				E1D274FD26482941004EC053 /* Models */,
-				E107B7732643E7DE003F71D9 /* LoginViewController.h */,
-				E107B7742643E7DE003F71D9 /* LoginViewController.m */,
 				E14245B9263BBC5E00DCFF3B /* Assets.xcassets */,
 				E14245BE263BBC5E00DCFF3B /* Info.plist */,
 				E14245BF263BBC5E00DCFF3B /* main.m */,
@@ -208,6 +212,8 @@
 				E1D2750526490429004EC053 /* WBCell.m */,
 				E1D2750126483E92004EC053 /* PostWBViewController.h */,
 				E1D2750226483E92004EC053 /* PostWBViewController.m */,
+				E107B7732643E7DE003F71D9 /* LoginViewController.h */,
+				E107B7742643E7DE003F71D9 /* LoginViewController.m */,
 			);
 			path = HomePageViewControllers;
 			sourceTree = "<group>";
@@ -237,6 +243,8 @@
 				E14245D5263C315100DCFF3B /* MyPageViewController.m */,
 				E1D275072649542B004EC053 /* MyCollectionsTableViewController.h */,
 				E1D275082649542B004EC053 /* MyCollectionsTableViewController.m */,
+				E1434F86264C3D2E00C21028 /* BrowseHistoryTableViewController.h */,
+				E1434F87264C3D2E00C21028 /* BrowseHistoryTableViewController.m */,
 			);
 			path = MyPageViewControllers;
 			sourceTree = "<group>";
@@ -252,6 +260,8 @@
 				E1D2750B264A6127004EC053 /* WBCellFrame.m */,
 				E1D2750D264A7ACB004EC053 /* shareData.h */,
 				E1D2750E264A7ACB004EC053 /* shareData.m */,
+				E1434F83264C353800C21028 /* UserInformation.h */,
+				E1434F84264C353900C21028 /* UserInformation.m */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -325,12 +335,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				E132731D2646E47E0017ACF1 /* WeiboSDK.bundle in Sources */,
+				E1434F85264C353900C21028 /* UserInformation.m in Sources */,
 				E1D2750326483E92004EC053 /* PostWBViewController.m in Sources */,
 				E132731E2646E47E0017ACF1 /* libWeiboSDK.a in Sources */,
 				E1D274FC26480568004EC053 /* AccessToken.m in Sources */,
 				E132731F2646E47E0017ACF1 /* WBHttpRequest.h in Sources */,
 				E13273202646E47E0017ACF1 /* WeiboSDK.h in Sources */,
 				E107B7752643E7DE003F71D9 /* LoginViewController.m in Sources */,
+				E1434F88264C3D2E00C21028 /* BrowseHistoryTableViewController.m in Sources */,
 				E1D2750026482989004EC053 /* TheWbData.m in Sources */,
 				E1DA8C9D263EBA8C00C78485 /* MessagePageTableViewController.m in Sources */,
 				E14245D6263C315100DCFF3B /* MyPageViewController.m in Sources */,

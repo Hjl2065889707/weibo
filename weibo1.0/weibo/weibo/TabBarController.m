@@ -41,11 +41,6 @@
     myPageNavigationController.tabBarItem.selectedImage = [UIImage imageNamed:@"my-fill.png"];
     [self addChildViewController:myPageNavigationController];
     
-    LoginViewController *loginViewController = [[LoginViewController alloc] init];
-    loginViewController.tabBarItem.title = @"登陆";
-    loginViewController.tabBarItem.image = [UIImage imageNamed:@"my.png"];
-    loginViewController.tabBarItem.selectedImage = [UIImage imageNamed:@"my-fill.png"];
-    [self addChildViewController:loginViewController];
 }
 
 
