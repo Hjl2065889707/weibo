@@ -17,12 +17,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    NSString *docPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
-    NSString *filePath = [NSString stringWithFormat:@"%@/accessToken.plist",docPath];
-    NSString *accessTokenString = [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:nil];
-    AccessToken *accessToken = [[AccessToken  alloc] init];
-    accessToken.access_token = accessTokenString;
-    
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     
@@ -31,6 +25,7 @@
     UIBarButtonItem *reloadButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"reload.png"] style:UIBarButtonItemStyleDone target:self action:@selector(reloadTableViewData)];
     self.navigationItem.leftBarButtonItem = reloadButton;
     self.navigationItem.rightBarButtonItem = postButton;
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -90,11 +85,13 @@
 - (void)reloadTableViewData
 {
     NSLog(@"reload");
+    [self reloadWBData];
     [self.tableView reloadData];
 }
 
 - (void)reloadWBData
 {
+    [self initAndCheckAccessToken];
     AccessToken *token = [[AccessToken alloc] init];
     NSLog(@"%@",token.access_token);
     NSURLSession *session = [NSURLSession sharedSession];//创建会话对象
@@ -114,11 +111,52 @@
 
         NSLog(@"%lu",dataArray.count);
         self.dataArray = dataArray;
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            //同步回到主线程
+            [self.tableView reloadData];
+                });
 
     }];
 
     [dataTask resume];
 }
+
+#pragma mark -CheckAccess_token
+- (void)initAndCheckAccessToken
+{
+    //获取access_token
+    NSString *docPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
+    NSString *filePath = [NSString stringWithFormat:@"%@/accessToken.plist",docPath];
+    NSString *accessTokenString = [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:nil];
+    AccessToken *accessToken = [[AccessToken  alloc] init];
+    accessToken.access_token = accessTokenString;
+    if (accessToken.access_token == nil) {
+        [self.navigationController pushViewController:[[LoginViewController alloc] init] animated:YES];
+        return;
+    }
+    
+    NSURLSession *session = [NSURLSession sharedSession];//创建会话对象
+    NSString *urlString = [NSString stringWithFormat:@"https://api.weibo.com/oauth2/get_token_info?access_token=%@",accessToken.access_token];
+    NSURL *url = [NSURL URLWithString:urlString];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    [request setHTTPMethod:@"POST"];//设置请求的方法为POST方法
+    NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
+        NSLog(@"%@",dic);
+        if ([dic valueForKey:@"expire_in"] < 0 || [dic valueForKey:@"error"] != nil) {
+            NSLog(@"该access_token已过期！");
+            
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                //同步回到主线程
+                [self.navigationController pushViewController:[[LoginViewController alloc] init] animated:NO];
+                    });
+
+        }
+    }];
+
+    [dataTask resume];
+}
+
 
 
 @end
