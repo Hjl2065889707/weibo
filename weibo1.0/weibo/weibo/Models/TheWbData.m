@@ -23,6 +23,7 @@
     self.repostsCount = [dic valueForKey:@"reposts_count"];
     self.userId = [[dic valueForKey:@"user"] valueForKey:@"id"];
     self.originalPictureURL = [dic valueForKey:@"original_pic"];
+    self.middlePictureURL = [dic valueForKey:@"bmiddle_pic"];
 }
 
 - (void)initWithFilePathDictionary:(NSDictionary *)dic
@@ -39,13 +40,16 @@
     self.repostsCount = [dic valueForKey:@"reposts_count"];
     self.userId = [dic valueForKey:@"userId"];
     self.originalPictureURL = [dic valueForKey:@"original_pic"];
-    NSLog(@"dicFromFilePath = %@",self);
+    self.middlePictureURL = [dic valueForKey:@"bmiddle_pic"];
 }
 
 + (NSDictionary *)initDicitonaryWithTheWbData:(TheWbData *)theWbData
 {
     if (theWbData.originalPictureURL == nil) {
         theWbData.originalPictureURL = [NSString stringWithFormat:@"nil"];
+    }
+    if (theWbData.middlePictureURL == nil) {
+        theWbData.middlePictureURL = [NSString stringWithFormat:@"nil"];
     }
     NSDictionary *dic = @{@"name":theWbData.name,
                     @"created_at":theWbData.creatTime,
@@ -58,7 +62,8 @@
                 @"comments_count":theWbData.commentsCount,
                   @"repostsCount":theWbData.repostsCount,
                         @"userId":theWbData.userId,
-                  @"original_pic":theWbData.originalPictureURL
+                  @"original_pic":theWbData.originalPictureURL,
+                   @"bmiddle_pic":theWbData.middlePictureURL
     };
     return dic;
 }

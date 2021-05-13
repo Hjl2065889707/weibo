@@ -11,7 +11,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface WBCell : UITableViewCell
+@interface WBCell : UITableViewCell<UITextViewDelegate>
 
 @property(strong,nonatomic)TheWbData *theWBData;
 @property(strong,nonatomic)UIImageView *pictureImageView;

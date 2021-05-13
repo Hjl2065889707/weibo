@@ -16,6 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(strong,nonatomic)NSString *text;
 @property(strong,nonatomic)NSString *creatTime;
 @property(strong,nonatomic)NSString *originalPictureURL;
+@property(strong,nonatomic)NSString *middlePictureURL;
 @property(strong,nonatomic)NSNumber *pictureNumber;
 @property(strong,nonatomic)NSNumber *attitudesCount;
 @property(strong,nonatomic)NSNumber *repostsCount;

@@ -21,10 +21,17 @@
     
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
+    //下拉刷新
+    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
+    refreshControl.attributedTitle = [[NSAttributedString alloc]initWithString:@"下拉刷新"];
+    [refreshControl addTarget:self action:@selector(reloadWBData) forControlEvents:UIControlEventValueChanged];
+    self.tableView.refreshControl = refreshControl;
+
+    
     
     UIBarButtonItem *postButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"post.png"] style:UIBarButtonItemStyleDone target:self action:@selector(postWB)];
     
-    UIBarButtonItem *reloadButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"reload.png"] style:UIBarButtonItemStyleDone target:self action:@selector(reloadTableViewData)];
+    UIBarButtonItem *reloadButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"reload.png"] style:UIBarButtonItemStyleDone target:self action:@selector(reloadWBData)];
     self.navigationItem.leftBarButtonItem = reloadButton;
     self.navigationItem.rightBarButtonItem = postButton;
     
@@ -90,7 +97,6 @@
     for (int i = 0;i<self.browseHistoryArray.count;i++) {
         NSDictionary *dic = self.browseHistoryArray[i];
         if ([wbData.creatTime isEqualToString:[dic valueForKey:@"created_at"]] && [wbData.name isEqualToString:[dic valueForKey:@"name"]]) {
-            NSLog(@"%lu",(unsigned long)self.browseHistoryArray.count);
             [self.browseHistoryArray removeObjectAtIndex:i];
         }
     }
@@ -116,17 +122,10 @@
 
 #pragma mark - DataMethod
 
-- (void)reloadTableViewData
-{
-    NSLog(@"reload");
-    [self reloadWBData];
-    [self.tableView reloadData];
-}
 
 - (void)reloadWBData
 {
     [self initAndCheckAccessToken];
-    NSLog(@"%@",self.accessToken.access_token);
     //请求数据
     NSURLSession *session = [NSURLSession sharedSession];//创建会话对象
     NSString *urlString = [NSString stringWithFormat:@"https://api.weibo.com/2/statuses/home_timeline.json?access_token=%@",self.accessToken.access_token];
@@ -147,11 +146,13 @@
             [dataArray addObject:theWBData];
         }
 
-        NSLog(@"%lu",dataArray.count);
         self.dataArray = dataArray;
         //同步回到主线程
         dispatch_sync(dispatch_get_main_queue(), ^{
             [self.tableView reloadData];
+            if ([self.tableView.refreshControl isRefreshing]) {
+                        [self.tableView.refreshControl endRefreshing];
+                    }
                 });
     }];
     //执行任务
@@ -180,7 +181,6 @@
     [request setHTTPMethod:@"POST"];//设置请求的方法为POST方法
     NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
-        NSLog(@"%@",dic);
         //如果过期则跳转到登陆界面
         if ([dic valueForKey:@"expire_in"] < 0 || [dic valueForKey:@"error"] != nil) {
             NSLog(@"该access_token已过期！");
@@ -207,7 +207,6 @@
     NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
         userInformation.userId = [dic valueForKey:@"uid"];
-        NSLog(@"userInformation = %@",userInformation);
     }];
     
     [dataTask resume];

@@ -9,7 +9,6 @@
 #import "AppDelegate.h"
 #import "WeiboSDK.h"
 #import "WBHttpRequest.h"
-#import <WebKit/WebKit.h>
 
 @interface LoginViewController ()
 @property(weak,nonatomic)WKWebView *webView;
