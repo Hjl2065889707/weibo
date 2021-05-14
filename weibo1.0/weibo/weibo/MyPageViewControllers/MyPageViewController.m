@@ -28,7 +28,12 @@
     myCollectsButton.frame = CGRectMake(100,100,200, 50);
     [myCollectsButton addTarget:self action:@selector(collectButtonPressed) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:myCollectsButton];
-    
+    //历史记录按钮
+    UIButton *browseHistoryButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [browseHistoryButton setTitle:@"浏览记录" forState:UIControlStateNormal];
+    browseHistoryButton.frame = CGRectMake(100,400,200, 50);
+    [browseHistoryButton addTarget:self action:@selector(browseHistoryButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:browseHistoryButton];
     
     
     UIButton *outButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
@@ -47,10 +52,15 @@
 
 - (void)collectButtonPressed
 {
-    [self.navigationController pushViewController:[[BrowseHistoryTableViewController alloc] init] animated:YES];
+    [self.navigationController pushViewController:[[MyCollectionsTableViewController alloc] init] animated:YES];
     
 }
 
+- (void)browseHistoryButtonPressed
+{
+    [self.navigationController pushViewController:[[BrowseHistoryTableViewController alloc] init] animated:YES];
+    
+}
 - (void)outButtonPressed
 {
     //登出

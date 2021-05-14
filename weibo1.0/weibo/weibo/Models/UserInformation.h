@@ -12,6 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 @interface UserInformation : NSObject
 @property(strong,nonatomic)NSString *userId;
 @property(strong,nonatomic)NSString *browseHistoryFilePath;
+@property(strong,nonatomic)NSString *collectFilePath;
+
 @end
 
 NS_ASSUME_NONNULL_END

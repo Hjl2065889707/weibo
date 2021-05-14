@@ -16,6 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(strong,nonatomic)TheWbData *theWBData;
 @property(strong,nonatomic)UIImageView *pictureImageView;
 @property(strong,nonatomic)WBCellFrame *wbCellFrame;
+@property(strong,nonatomic)NSMutableArray *collectArray;
 
 - (void)initSubviews;
 

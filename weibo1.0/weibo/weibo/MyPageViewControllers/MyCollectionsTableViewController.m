@@ -6,8 +6,14 @@
 //
 
 #import "MyCollectionsTableViewController.h"
+#import "UserInformation.h"
+#import "TheWbData.h"
+#import "WBCellFrame.h"
+#import "WBCell.h"
 
 @interface MyCollectionsTableViewController ()<UITableViewDelegate,UITableViewDataSource>
+@property(strong,nonatomic)NSMutableArray *collectArray;
+@property(strong,nonatomic)WBCellFrame *wbCellFrame;
 
 @end
 
@@ -15,78 +21,52 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
-    
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    UserInformation *userInformation = [[UserInformation alloc] init];
+    _collectArray = [[NSMutableArray alloc] initWithContentsOfFile:userInformation.collectFilePath];
+
 }
 
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-#warning Incomplete implementation, return the number of sections
-    return 0;
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-#warning Incomplete implementation, return the number of rows
-    return 0;
+    return self.collectArray.count;
 }
 
-/*
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:<#@"reuseIdentifier"#> forIndexPath:indexPath];
-    
-    // Configure the cell...
-    
+
+-(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    WBCell *cell = [tableView dequeueReusableCellWithIdentifier:@"id"];//从复用回收池中取cell
+    if(!cell){//如果取不到就让cell=新建cell
+        cell = [[WBCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"id"];
+    }
+    //移除cell里面的imageView
+    for(UIView *uv in cell.contentView.subviews){
+            [uv removeFromSuperview];
+    }
+    //设置cell被选中时不变灰
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    //设置theWBData
+    TheWbData *wbdata = [[TheWbData alloc] init];
+    [wbdata initWithFilePathDictionary:self.collectArray[indexPath.row]];
+    cell.theWBData = wbdata;
+    //设置wbCellFrame
+    _wbCellFrame = [[WBCellFrame alloc] init];
+    _wbCellFrame.wbData = cell.theWBData;//该行可以初始化wbCellFrame的所有属性
+    cell.wbCellFrame = _wbCellFrame;
+    //创建cell的子view的
+    [cell initSubviews];
+
     return cell;
 }
-*/
 
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return _wbCellFrame.attitudeTextViewFrame.origin.y+40;//设置cell的高度
 }
-*/
 
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

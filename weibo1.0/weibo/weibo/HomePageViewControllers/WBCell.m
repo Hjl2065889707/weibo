@@ -10,6 +10,8 @@
 #import "WBHttpRequest.h"
 #import <WebKit/WebKit.h>
 #import "WebViewController.h"
+#import "CollectButton.h"
+#import "UserInformation.h"
 
 @implementation WBCell
 
@@ -43,6 +45,8 @@
     UITextView *nameTextView = [[UITextView alloc] init];
     nameTextView.text = self.theWBData.name;
     nameTextView.frame = _wbCellFrame.nameTextViewFrame;
+    nameTextView.textContainer.maximumNumberOfLines = 1;//最大行数设置为1
+    nameTextView.textContainer.lineBreakMode = NSLineBreakByTruncatingTail;//文本超过显示范围就显示省略号
     nameTextView.editable = NO;
     nameTextView.scrollEnabled = NO;
     nameTextView.font = [UIFont fontWithName:@"Arial" size:18];
@@ -55,6 +59,15 @@
     timeTextView.scrollEnabled = NO;
     timeTextView.font = [UIFont fontWithName:@"Arial" size:16];
     [self.contentView addSubview:timeTextView];
+    //收藏按钮
+  //  CollectButton *collectButton = [CollectButton buttonWithType:UIButtonTypeRoundedRect];
+    CollectButton *collectButton = [[CollectButton alloc] init];
+    [collectButton setImage:[UIImage imageNamed:@"collect-no.png"] forState:UIControlStateNormal];
+       [collectButton setImage:[UIImage imageNamed:@"collect-yes.png"] forState:UIControlStateSelected];
+    [collectButton addTarget:self action:@selector(collectButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+    collectButton.frame = _wbCellFrame.collectButtonFrame;
+    [self.contentView addSubview:collectButton];
+
     //文字内容
     UITextView *mainTextView = [[UITextView alloc] init];
     mainTextView.frame = _wbCellFrame.mainTextViewFrame;
@@ -120,11 +133,44 @@
     [self.contentView addSubview:attitudeNumber];
 }
 
-
+#pragma mark -ButtonMethod
 
 - (void)nameClick
 {
     [WeiboSDK linkToUser:[NSString stringWithFormat:@"%@",self.theWBData.userId]];
+}
+
+- (void)collectButtonClick:(UIButton *)button
+{
+    //获取当前用户信息，用于获取文件目录
+    UserInformation *userInformation = [[UserInformation alloc] init];
+    //从文件中获取数据
+    self.collectArray = [[NSMutableArray alloc] initWithContentsOfFile:userInformation.collectFilePath];
+    //文件为空则创建数组
+    if (self.collectArray == nil) {
+            self.collectArray = [[NSMutableArray alloc] init];
+    }
+    TheWbData *wbData = self.theWBData;
+    //如果数组中存在该微博，则删除(根据用户名和微博发布时间判断)
+    for (int i = 0;i<self.collectArray.count;i++) {
+        NSDictionary *dic = self.collectArray[i];
+        if ([wbData.creatTime isEqualToString:[dic valueForKey:@"created_at"]] && [wbData.name isEqualToString:[dic valueForKey:@"name"]]) {
+            [self.collectArray removeObjectAtIndex:i];
+        }
+    }
+    if (button.selected == NO) {
+        NSLog(@"收藏成功");
+        //添加当前微博的数据到数组中
+        [self.collectArray addObject:[TheWbData initDicitonaryWithTheWbData:wbData]];
+        //写入数据
+    }else{
+        NSLog(@"取消收藏成功");
+        }
+    //写入数据
+    NSArray *array = [[NSArray alloc] initWithArray:self.collectArray];
+    [array writeToFile:userInformation.collectFilePath atomically:NO];
+    //切换button选中状态
+    button.selected = !button.selected;
 }
 
 #pragma mark - UITextViewDelegate

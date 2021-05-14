@@ -41,6 +41,12 @@
     self.userId = [dic valueForKey:@"userId"];
     self.originalPictureURL = [dic valueForKey:@"original_pic"];
     self.middlePictureURL = [dic valueForKey:@"bmiddle_pic"];
+    //防止dic中key的值为nil
+    [dic enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
+            if (obj == nil) {
+                obj = [NSString stringWithFormat:@"nil"];
+            }
+    }];
 }
 
 + (NSDictionary *)initDicitonaryWithTheWbData:(TheWbData *)theWbData
@@ -51,16 +57,20 @@
     if (theWbData.middlePictureURL == nil) {
         theWbData.middlePictureURL = [NSString stringWithFormat:@"nil"];
     }
+    if (theWbData.location == nil) {
+        theWbData.location = [NSString stringWithFormat:@"nil"];
+    }
+    
     NSDictionary *dic = @{@"name":theWbData.name,
                     @"created_at":theWbData.creatTime,
-                      @"loaction":theWbData.location,
+                      @"location":theWbData.location,
              @"profile_image_url":theWbData.profileImageURL,
                           @"text":theWbData.text,
                        @"pic_num":theWbData.pictureNumber,
                       @"pic_urls":theWbData.pictureURLs,
                @"attitudes_count":theWbData.attitudesCount,
                 @"comments_count":theWbData.commentsCount,
-                  @"repostsCount":theWbData.repostsCount,
+                  @"reposts_count":theWbData.repostsCount,
                         @"userId":theWbData.userId,
                   @"original_pic":theWbData.originalPictureURL,
                    @"bmiddle_pic":theWbData.middlePictureURL
