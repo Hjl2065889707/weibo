@@ -19,7 +19,6 @@
     _timeTextViewFrame = CGRectMake(100, 55, 300, 30);
     _collectButtonFrame = CGRectMake(360, 10, 60, 60);
     //动态设置textView的高
-    NSLog(@"%@",wbData.text);
     CGRect mainTextRect = [wbData.text boundingRectWithSize:CGSizeMake(350, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18]} context:nil];//text:用来计算的字符串;size:计算的宽高限制（固定的写确定的值，需要计算的写CGFLOAT_MAX）;options:文本绘制的附加选项;attributes:字典格式，限定字符串显示的样式，一般限制字体较多;context:包括一些信息，（如：如何调整字间距以及缩放），最终该对象包含的信息将会用于文本绘制，一般写nil
     CGFloat mainTextHeight = mainTextRect.size.height+40;
     _mainTextViewFrame = CGRectMake(20, 100, 350,mainTextHeight);

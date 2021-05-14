@@ -7,9 +7,11 @@
 
 #import "HomePageTableViewController.h"
 
-@interface HomePageTableViewController ()<UITableViewDelegate,UITableViewDataSource>
+@interface HomePageTableViewController ()<UITableViewDelegate,UITableViewDataSource,UISearchBarDelegate,UISearchResultsUpdating>
 @property(strong,nonatomic)NSMutableArray *dataArray;
+@property(strong,nonatomic)NSArray *searchResultDataArray;
 @property(strong,nonatomic)NSMutableArray *browseHistoryArray;
+@property (nonatomic,strong) UISearchController *searchController;
 @property(strong,nonatomic)AccessToken *accessToken;
 @property(strong,nonatomic)WBCellFrame *wbCellFrame;
 @end
@@ -27,6 +29,15 @@
     [refreshControl addTarget:self action:@selector(reloadWBData) forControlEvents:UIControlEventValueChanged];
     self.tableView.refreshControl = refreshControl;
 
+    //searchbar
+    self.searchController = [[UISearchController alloc] initWithSearchResultsController:nil];//初始化
+    self.searchController.searchResultsUpdater = self;//设置代理对象
+    self.searchController.obscuresBackgroundDuringPresentation = NO;//搜索时背景模糊
+    self.searchController.searchBar.frame = CGRectMake(self.searchController.searchBar.frame.origin.x,
+                   self.searchController.searchBar.frame.origin.y,
+                   self.searchController.searchBar.frame.size.width, 44.0);//设置frame
+    self.tableView.tableHeaderView = self.searchController.searchBar;
+    
     
     
     UIBarButtonItem *postButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"post.png"] style:UIBarButtonItemStyleDone target:self action:@selector(postWB)];
@@ -48,6 +59,9 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    if (self.searchController.active) {
+        return _searchResultDataArray.count;
+    }
     return self.dataArray.count;
 }
 
@@ -64,11 +78,15 @@
     }
     //设置cell被选中时不变灰
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    //设置theWBData
-    cell.theWBData = self.dataArray[indexPath.row];
+    //根据搜索栏是否激活设置theWBData
+    if (self.searchController.active == NO) {
+        cell.theWBData = self.dataArray[indexPath.row];
+    }else{
+            cell.theWBData = _searchResultDataArray[indexPath.row];
+    }
     //设置wbCellFrame
     _wbCellFrame = [[WBCellFrame alloc] init];
-    _wbCellFrame.wbData = self.dataArray[indexPath.row];//该行可以初始化wbCellFrame的所有属性
+    _wbCellFrame.wbData = cell.theWBData;//该行可以初始化wbCellFrame的所有属性
     cell.wbCellFrame = _wbCellFrame;
     //创建cell的子view的
     [cell initSubviews];
@@ -195,7 +213,7 @@
 
     [dataTask resume];
 }
-
+#pragma mark - initUserInformation
 - (void)initUserInformation
 {
     //根据access_token获得当前用户id，并创建UserInformation单例
@@ -212,5 +230,23 @@
     [dataTask resume];
     
 }
+
+#pragma mark - UISearchBarDelegate
+
+- (void)updateSearchResultsForSearchController:(UISearchController *)searchController
+{
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"%K CONTAINS %@ || %K CONTAINS %@", @"name",_searchController.searchBar.text, @"text",_searchController.searchBar.text];
+    
+    _searchResultDataArray = [_dataArray filteredArrayUsingPredicate:predicate];
+    [_searchResultDataArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            TheWbData *theData = obj;
+            NSLog(@"%@",theData.text);
+    }];
+    NSLog(@"%@",_searchResultDataArray);
+    if (_searchController.searchBar.text) {
+        [self.tableView reloadData];
+    }
+}
+
 
 @end
