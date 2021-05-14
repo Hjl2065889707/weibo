@@ -133,9 +133,7 @@
 #pragma mark - postWbButtonMethod
 - (void)postWB
 {
-    //跳转到postWB界面
-    PostWBViewController *postViewController = [[PostWBViewController alloc] init];
-    [self.navigationController pushViewController:postViewController animated:YES];
+    [WeiboSDK shareToWeibo:@""];
 }
 
 #pragma mark - DataMethod

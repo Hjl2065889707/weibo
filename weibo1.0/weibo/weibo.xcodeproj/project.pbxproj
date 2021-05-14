@@ -37,7 +37,6 @@
 		E1434F8E264D8DDD00C21028 /* CollectButton.m in Sources */ = {isa = PBXBuildFile; fileRef = E1434F8D264D8DDD00C21028 /* CollectButton.m */; };
 		E1D274FC26480568004EC053 /* AccessToken.m in Sources */ = {isa = PBXBuildFile; fileRef = E1D274FB26480568004EC053 /* AccessToken.m */; };
 		E1D2750026482989004EC053 /* TheWbData.m in Sources */ = {isa = PBXBuildFile; fileRef = E1D274FF26482989004EC053 /* TheWbData.m */; };
-		E1D2750326483E92004EC053 /* PostWBViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1D2750226483E92004EC053 /* PostWBViewController.m */; };
 		E1D2750626490429004EC053 /* WBCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E1D2750526490429004EC053 /* WBCell.m */; };
 		E1D275092649542B004EC053 /* MyCollectionsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1D275082649542B004EC053 /* MyCollectionsTableViewController.m */; };
 		E1D2750C264A6127004EC053 /* WBCellFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = E1D2750B264A6127004EC053 /* WBCellFrame.m */; };
@@ -90,8 +89,6 @@
 		E1D274FB26480568004EC053 /* AccessToken.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AccessToken.m; sourceTree = "<group>"; };
 		E1D274FE26482989004EC053 /* TheWbData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TheWbData.h; sourceTree = "<group>"; };
 		E1D274FF26482989004EC053 /* TheWbData.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TheWbData.m; sourceTree = "<group>"; };
-		E1D2750126483E92004EC053 /* PostWBViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PostWBViewController.h; sourceTree = "<group>"; };
-		E1D2750226483E92004EC053 /* PostWBViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PostWBViewController.m; sourceTree = "<group>"; };
 		E1D2750426490429004EC053 /* WBCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WBCell.h; sourceTree = "<group>"; };
 		E1D2750526490429004EC053 /* WBCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WBCell.m; sourceTree = "<group>"; };
 		E1D275072649542B004EC053 /* MyCollectionsTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MyCollectionsTableViewController.h; sourceTree = "<group>"; };
@@ -216,8 +213,6 @@
 				E1DA8C8C263E91DB00C78485 /* HomePageTableViewController.m */,
 				E1D2750426490429004EC053 /* WBCell.h */,
 				E1D2750526490429004EC053 /* WBCell.m */,
-				E1D2750126483E92004EC053 /* PostWBViewController.h */,
-				E1D2750226483E92004EC053 /* PostWBViewController.m */,
 				E107B7732643E7DE003F71D9 /* LoginViewController.h */,
 				E107B7742643E7DE003F71D9 /* LoginViewController.m */,
 				E1434F89264D699300C21028 /* WebViewController.h */,
@@ -346,7 +341,6 @@
 			files = (
 				E132731D2646E47E0017ACF1 /* WeiboSDK.bundle in Sources */,
 				E1434F85264C353900C21028 /* UserInformation.m in Sources */,
-				E1D2750326483E92004EC053 /* PostWBViewController.m in Sources */,
 				E132731E2646E47E0017ACF1 /* libWeiboSDK.a in Sources */,
 				E1D274FC26480568004EC053 /* AccessToken.m in Sources */,
 				E132731F2646E47E0017ACF1 /* WBHttpRequest.h in Sources */,
