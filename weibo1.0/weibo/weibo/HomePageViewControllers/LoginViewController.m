@@ -13,6 +13,7 @@
 @interface LoginViewController ()
 @property(weak,nonatomic)WKWebView *webView;
 @property(strong,nonatomic)NSString *token;
+
 @end
 
 @implementation LoginViewController
@@ -38,17 +39,6 @@
     
 }
 
-//#pragma mark SSO Authorization
-//- (void)ssoButtonPressed
-//{
-//    NSLog(@"pressed");
-//    WBAuthorizeRequest *request = [WBAuthorizeRequest request];
-//    request.redirectURI = kRedirectURI;
-//    request.scope = @"all";
-//    request.shouldShowWebViewForAuthIfCannotSSO = YES;
-//
-//    [WeiboSDK sendRequest:request completion:nil];
-//}
 
 
 
@@ -84,6 +74,8 @@
             dispatch_sync(dispatch_get_main_queue(), ^{
                 //同步回到主线程
                 [self.navigationController popToRootViewControllerAnimated:YES];
+
+                [self.delegate performSelector:@selector(reloadTabelViewData)];
                     });
         }];//创建一个dataTask
         

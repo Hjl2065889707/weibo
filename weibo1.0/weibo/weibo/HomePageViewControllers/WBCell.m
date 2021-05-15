@@ -101,15 +101,17 @@
                                  range:NSMakeRange(0, [self.theWBData.text length])
                             usingBlock:
     ^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
-        //如果存在链接
+        //如果存在链接,将该链接的range和NSMutableAttributedString存入linkTextArray
         if (result.range.length > 0) {
+            //linkText:字符为🔗网页链接，蓝色，font为18，已设置LinkAttribute
             NSMutableAttributedString *linkText = [[NSMutableAttributedString alloc] initWithString:@"🔗网页链接" attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18],NSForegroundColorAttributeName:[UIColor blueColor],NSLinkAttributeName:result.URL} ];
             NSValue *range = [NSValue valueWithRange:result.range];
-            NSLog(@"%@",range);
+            NSLog(@"%@",result.URL);
             NSDictionary *dic = @{@"linkText":linkText,@"range":range};
             [linkTextArray addObject:dic];
         }
     }];
+    //将指定range中的文本替换为linktext
     while (linkTextArray.count > 0) {
         [mainText replaceCharactersInRange:[[[linkTextArray lastObject] valueForKey:@"range"] rangeValue] withAttributedString:[[linkTextArray lastObject] valueForKey:@"linkText"] ];
         [linkTextArray removeLastObject];
@@ -210,8 +212,10 @@
 #pragma mark - UITextViewDelegate
 - (BOOL)textView:(UITextView *)textView shouldInteractWithURL:(NSURL *)URL inRange:(NSRange)characterRange interaction:(UITextItemInteraction)interaction
 {
-    
-    return YES;
+    [_delegate performSelector:@selector(poenLinkText:) withObject:URL];
+    return NO;
 }
+#pragma mark - cellDelegate
+
 
 @end

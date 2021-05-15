@@ -7,7 +7,7 @@
 
 #import "HomePageTableViewController.h"
 
-@interface HomePageTableViewController ()<UITableViewDelegate,UITableViewDataSource,UISearchBarDelegate,UISearchResultsUpdating>
+@interface HomePageTableViewController ()<UITableViewDelegate,UITableViewDataSource,UISearchBarDelegate,UISearchResultsUpdating,TheWBCellDelegate,LoginViewControllerDelegate>
 @property(strong,nonatomic)NSMutableArray *dataArray;
 @property(strong,nonatomic)NSArray *searchResultDataArray;
 @property(strong,nonatomic)NSMutableArray *browseHistoryArray;
@@ -45,12 +45,14 @@
     UIBarButtonItem *reloadButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"reload.png"] style:UIBarButtonItemStyleDone target:self action:@selector(reloadWBData)];
     self.navigationItem.leftBarButtonItem = reloadButton;
     self.navigationItem.rightBarButtonItem = postButton;
-    
+    [self reloadWBData];
+
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    [self reloadWBData];
+    [self initAndCheckAccessToken];
+//    [self reloadWBData];
 }
 #pragma mark - Table view data source
 
@@ -84,6 +86,8 @@
     }else{
             cell.theWBData = _searchResultDataArray[indexPath.row];
     }
+    //设置cell的代理
+    cell.delegate = self;
     //设置wbCellFrame
     _wbCellFrame = [[WBCellFrame alloc] init];
     _wbCellFrame.wbData = cell.theWBData;//该行可以初始化wbCellFrame的所有属性
@@ -186,7 +190,9 @@
     _accessToken.access_token = accessTokenString;
     //文件为空则跳转到登陆界面
     if (_accessToken.access_token == nil) {
-        [self.navigationController pushViewController:[[LoginViewController alloc] init] animated:YES];
+        LoginViewController *loginViewController = [[LoginViewController alloc] init];
+        loginViewController.delegate = self;
+        [self.navigationController pushViewController:loginViewController animated:YES];
         return;
     }
     //判断该access_token是否有效
@@ -202,8 +208,10 @@
             NSLog(@"该access_token已过期！");
             //同步回到主线程
             dispatch_sync(dispatch_get_main_queue(), ^{
-                [self.navigationController pushViewController:[[LoginViewController alloc] init] animated:NO];
-                    });
+                LoginViewController *loginViewController = [[LoginViewController alloc] init];
+                loginViewController.delegate = self;
+                [self.navigationController pushViewController:loginViewController animated:YES];
+            });
         }
         //未过期则创建UserInformation单例
         [self initUserInformation];
@@ -244,6 +252,21 @@
     if (_searchController.searchBar.text) {
         [self.tableView reloadData];
     }
+}
+
+
+
+- (void)poenLinkText:(NSURL *)url
+{
+    WebViewController *webViewController = [[WebViewController alloc] init];
+    webViewController.url = url;
+    [self.navigationController pushViewController:webViewController animated:YES];
+}
+
+
+- (void)reloadTabelViewData {
+    NSLog(@"reload");
+    [self reloadWBData];
 }
 
 

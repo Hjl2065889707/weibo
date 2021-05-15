@@ -10,8 +10,18 @@
 #import <WebKit/WebKit.h>
 #import "AccessToken.h"
 NS_ASSUME_NONNULL_BEGIN
+@class LoginViewController;
+
+@protocol LoginViewControllerDelegate <NSObject>
+
+- (void)reloadTabelViewData;
+
+@end
+
 
 @interface LoginViewController : UIViewController<WeiboSDKDelegate,WKUIDelegate,WKNavigationDelegate>
+
+@property(weak,nonatomic)id<LoginViewControllerDelegate> delegate;
 
 @end
 

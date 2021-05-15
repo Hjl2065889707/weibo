@@ -9,10 +9,16 @@
 #import "TheWbData.h"
 #import "WBCellFrame.h"
 
-NS_ASSUME_NONNULL_BEGIN
+@class WBCell;
+
+@protocol TheWBCellDelegate <NSObject>
+
+- (void)poenLinkText:(NSURL *)url;
+
+@end
 
 @interface WBCell : UITableViewCell<UITextViewDelegate>
-
+@property (nonatomic, weak)id <TheWBCellDelegate> delegate;
 @property(strong,nonatomic)TheWbData *theWBData;
 @property(strong,nonatomic)UIImageView *pictureImageView;
 @property(strong,nonatomic)WBCellFrame *wbCellFrame;
@@ -24,4 +30,3 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-NS_ASSUME_NONNULL_END

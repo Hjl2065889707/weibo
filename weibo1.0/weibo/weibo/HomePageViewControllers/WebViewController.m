@@ -10,7 +10,8 @@
 
 
 @interface WebViewController ()
-@property(strong,nonatomic)NSURL *url;
+
+
 @end
 
 @implementation WebViewController

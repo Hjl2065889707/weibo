@@ -10,6 +10,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface WebViewController : UIViewController
+@property(strong,nonatomic)NSURL *url;
 
 @end
 
