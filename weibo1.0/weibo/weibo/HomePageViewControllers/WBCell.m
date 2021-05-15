@@ -93,24 +93,27 @@
     [self.contentView addSubview:mainTextView];
     
     NSMutableAttributedString *mainText = [[NSMutableAttributedString alloc] initWithString:self.theWBData.text attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18]} ];
+    NSMutableArray *linkTextArray = [NSMutableArray array];
     //利用NSDataDetector来找到文字中的链接,并对链接进行处理
     NSDataDetector *detector = [NSDataDetector dataDetectorWithTypes:NSTextCheckingTypeLink error:nil];
     [detector enumerateMatchesInString:self.theWBData.text
-                               options:kNilOptions
+                               options:0
                                  range:NSMakeRange(0, [self.theWBData.text length])
                             usingBlock:
     ^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
         //如果存在链接
         if (result.range.length > 0) {
-            //设置链接颜色
-            [mainText addAttribute:NSForegroundColorAttributeName value:[UIColor blueColor] range:result.range];
-            //
-            [mainText addAttribute:NSLinkAttributeName value:result.URL range:result.range];
+            NSMutableAttributedString *linkText = [[NSMutableAttributedString alloc] initWithString:@"🔗网页链接" attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18],NSForegroundColorAttributeName:[UIColor blueColor],NSLinkAttributeName:result.URL} ];
+            NSValue *range = [NSValue valueWithRange:result.range];
+            NSLog(@"%@",range);
+            NSDictionary *dic = @{@"linkText":linkText,@"range":range};
+            [linkTextArray addObject:dic];
         }
-
-        
-        
     }];
+    while (linkTextArray.count > 0) {
+        [mainText replaceCharactersInRange:[[[linkTextArray lastObject] valueForKey:@"range"] rangeValue] withAttributedString:[[linkTextArray lastObject] valueForKey:@"linkText"] ];
+        [linkTextArray removeLastObject];
+    }
     mainTextView.attributedText = mainText;
     
     //图片内容
