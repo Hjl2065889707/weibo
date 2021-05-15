@@ -60,13 +60,29 @@
     timeTextView.font = [UIFont fontWithName:@"Arial" size:16];
     [self.contentView addSubview:timeTextView];
     //收藏按钮
-  //  CollectButton *collectButton = [CollectButton buttonWithType:UIButtonTypeRoundedRect];
     CollectButton *collectButton = [[CollectButton alloc] init];
     [collectButton setImage:[UIImage imageNamed:@"collect-no.png"] forState:UIControlStateNormal];
        [collectButton setImage:[UIImage imageNamed:@"collect-yes.png"] forState:UIControlStateSelected];
     [collectButton addTarget:self action:@selector(collectButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     collectButton.frame = _wbCellFrame.collectButtonFrame;
+    _collectButton = collectButton;
     [self.contentView addSubview:collectButton];
+    //获取当前用户信息，用于获取文件目录
+    UserInformation *userInformation = [[UserInformation alloc] init];
+    //从文件中获取数据
+    self.collectArray = [[NSMutableArray alloc] initWithContentsOfFile:userInformation.collectFilePath];
+    //文件为空则创建数组
+    if (self.collectArray == nil) {
+            self.collectArray = [[NSMutableArray alloc] init];
+    }
+    TheWbData *wbData = self.theWBData;
+    //如果数组中存在该微博，则收藏按钮状态为yes
+    for (int i = 0;i<self.collectArray.count;i++) {
+        NSDictionary *dic = self.collectArray[i];
+        if ([wbData.creatTime isEqualToString:[dic valueForKey:@"created_at"]] && [wbData.name isEqualToString:[dic valueForKey:@"name"]]) {
+            _collectButton.selected = YES;
+            }
+    }
 
     //文字内容
     UITextView *mainTextView = [[UITextView alloc] init];
@@ -108,6 +124,9 @@
         [self.contentView addSubview:_pictureImageView];
     }else if (self.theWBData.pictureNumber.intValue != 0){
         for (int i = 0; i < self.theWBData.pictureNumber.intValue; i++) {
+            if (self.theWBData.pictureNumber.intValue > 9) {
+                self.theWBData.pictureNumber = @9;
+            }
             NSData *pictureImageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:[[self.theWBData.pictureURLs objectAtIndex:i] valueForKey:@"thumbnail_pic"] ] ];
             UIImage *image = [[UIImage alloc] initWithData:pictureImageData];
             UIImageView *imageView = [[UIImageView alloc] initWithImage:image];

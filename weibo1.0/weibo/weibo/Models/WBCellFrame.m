@@ -39,7 +39,10 @@
         _mainImageViewFrame = CGRectMake(20,_mainTextViewFrame.origin.y+mainTextHeight+20,mainImageWidth ,mainImageHeight);
             
     }else if (wbData.pictureNumber.intValue > 1 ){
-        //2~3张图
+        //最多显示9张图
+        if (wbData.pictureNumber.intValue > 9) {
+            wbData.pictureNumber = @9;
+        }
         for (int i = 0;i < wbData.pictureNumber.intValue; i++) {
             mainImageHeight = 125;
             mainImageWidth = 125;
