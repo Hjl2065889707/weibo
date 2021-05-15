@@ -22,6 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic)CGRect attitudeTextViewFrame;
 @property(nonatomic)CGRect repostTextViewFrame;
 @property(nonatomic)CGRect collectButtonFrame;
+@property(nonatomic,strong)NSMutableArray *picturesFrameArray;
 
 
 @end

@@ -23,24 +23,42 @@
     CGFloat mainTextHeight = mainTextRect.size.height+40;
     _mainTextViewFrame = CGRectMake(20, 100, 350,mainTextHeight);
     //设置图片frame
-    CGFloat mainImageHeight;
-    CGFloat mainImageWidth;
-    if (wbData.pictureNumber.intValue != 0) {
+    CGFloat mainImageHeight = 1;
+    CGFloat mainImageWidth = 1;
+    _picturesFrameArray = [NSMutableArray array];
+    if (wbData.pictureNumber.intValue == 0) {
+        mainImageHeight = 10;
+        mainImageWidth = 1;
+        _mainImageViewFrame = _mainTextViewFrame ;
+
+    }else if (wbData.pictureNumber.intValue == 1){
         NSData *pictureImageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:self.wbData.middlePictureURL] ];
         UIImage *mainImage = [[UIImage alloc] initWithData:pictureImageData];
         mainImageHeight = 250.0f;
         mainImageWidth = (mainImage.size.width/mainImage.size.height)*250;
-        
-    }else{
-        mainImageHeight = 10;
-        mainImageWidth = 1;
+        _mainImageViewFrame = CGRectMake(20,_mainTextViewFrame.origin.y+mainTextHeight+20,mainImageWidth ,mainImageHeight);
+            
+    }else if (wbData.pictureNumber.intValue > 1 ){
+        //2~3张图
+        for (int i = 0;i < wbData.pictureNumber.intValue; i++) {
+            mainImageHeight = 125;
+            mainImageWidth = 125;
+            CGRect tempRect = CGRectMake(
+                            20+(mainImageWidth+2)*(i%3),
+                            _mainTextViewFrame.origin.y+mainTextHeight+20+(mainImageHeight+2)*(i/3),
+                            mainImageWidth,
+                            mainImageHeight);
+            NSValue *rectValue = [NSValue valueWithCGRect:tempRect];
+            [_picturesFrameArray addObject:rectValue];
+        }
+        _mainImageViewFrame = [[_picturesFrameArray lastObject] CGRectValue];
     }
-    _mainImageViewFrame = CGRectMake(20,_mainTextViewFrame.origin.y+mainTextHeight+20,mainImageWidth ,mainImageHeight);
+
     //设置转发，评论，点赞frame
-    _repostTextViewFrame = CGRectMake(15,_mainImageViewFrame.origin.y+mainImageHeight+10,130,30);
+    _repostTextViewFrame = CGRectMake(15,_mainImageViewFrame.origin.y+_mainImageViewFrame.size.height+10,130,30);
     _commentTextViewFrame =
-        CGRectMake(140,_mainImageViewFrame.origin.y+mainImageHeight+10, 130, 30);
-    _attitudeTextViewFrame = CGRectMake(275,_mainImageViewFrame.origin.y+mainImageHeight+10,130,30);
+        CGRectMake(140,_mainImageViewFrame.origin.y+_mainImageViewFrame.size.height+10, 130, 30);
+    _attitudeTextViewFrame = CGRectMake(275,_mainImageViewFrame.origin.y+_mainImageViewFrame.size.height+10,130,30);
 
 }
 

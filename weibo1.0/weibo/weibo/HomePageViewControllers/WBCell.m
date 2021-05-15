@@ -98,7 +98,7 @@
     mainTextView.attributedText = mainText;
     
     //图片内容
-    if (self.theWBData.pictureNumber.intValue != 0) {
+    if (self.theWBData.pictureNumber.intValue == 1) {
         NSData *pictureImageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:self.theWBData.middlePictureURL] ];
         UIImage *mainImage = [[UIImage alloc] initWithData:pictureImageData];
         _pictureImageView = [[UIImageView alloc] initWithImage:mainImage];
@@ -106,6 +106,18 @@
         _pictureImageView.contentMode = UIViewContentModeScaleAspectFill;
         _pictureImageView.frame = _wbCellFrame.mainImageViewFrame;
         [self.contentView addSubview:_pictureImageView];
+    }else if (self.theWBData.pictureNumber.intValue != 0){
+        for (int i = 0; i < self.theWBData.pictureNumber.intValue; i++) {
+            NSData *pictureImageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:[[self.theWBData.pictureURLs objectAtIndex:i] valueForKey:@"thumbnail_pic"] ] ];
+            UIImage *image = [[UIImage alloc] initWithData:pictureImageData];
+            UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+            //设置imageView的contentMode属性为UIViewContentModeScaleAspectFill，能保证图片比例不变，填充整个ImageView，但可能只有部分图片显示出来
+            imageView.contentMode = UIViewContentModeScaleAspectFill;
+            imageView.clipsToBounds = YES;
+            imageView.frame =
+            [[_wbCellFrame.picturesFrameArray objectAtIndex:i] CGRectValue];
+            [self.contentView addSubview:imageView];
+        }
     }
     //评论数
     UITextView *commentNumber = [[UITextView alloc] init];
