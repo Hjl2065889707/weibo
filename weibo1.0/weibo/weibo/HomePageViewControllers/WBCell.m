@@ -34,7 +34,7 @@
 }
 
 #pragma mark - initSubviews
--(void)initSubviews
+-(void)loadSubviews
 {
     //头像图片
     NSData *headImageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:self.theWBData.profileImageURL]];
@@ -118,31 +118,31 @@
     }
     mainTextView.attributedText = mainText;
     
-    //图片内容
-    if (self.theWBData.pictureNumber.intValue == 1) {
-        NSData *pictureImageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:self.theWBData.middlePictureURL] ];
-        UIImage *mainImage = [[UIImage alloc] initWithData:pictureImageData];
-        _pictureImageView = [[UIImageView alloc] initWithImage:mainImage];
-        //设置imageView的contentMode属性为UIViewContentModeScaleAspectFill，能保证图片比例不变，填充整个ImageView，但可能只有部分图片显示出来
-        _pictureImageView.contentMode = UIViewContentModeScaleAspectFill;
-        _pictureImageView.frame = _wbCellFrame.mainImageViewFrame;
-        [self.contentView addSubview:_pictureImageView];
-    }else if (self.theWBData.pictureNumber.intValue != 0){
-        for (int i = 0; i < self.theWBData.pictureNumber.intValue; i++) {
-            if (self.theWBData.pictureNumber.intValue > 9) {
-                self.theWBData.pictureNumber = @9;
-            }
-            NSData *pictureImageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:[[self.theWBData.pictureURLs objectAtIndex:i] valueForKey:@"thumbnail_pic"] ] ];
-            UIImage *image = [[UIImage alloc] initWithData:pictureImageData];
-            UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
-            //设置imageView的contentMode属性为UIViewContentModeScaleAspectFill，能保证图片比例不变，填充整个ImageView，但可能只有部分图片显示出来
-            imageView.contentMode = UIViewContentModeScaleAspectFill;
-            imageView.clipsToBounds = YES;
-            imageView.frame =
-            [[_wbCellFrame.picturesFrameArray objectAtIndex:i] CGRectValue];
-            [self.contentView addSubview:imageView];
-        }
-    }
+//    //图片内容
+//    if (self.theWBData.pictureNumber.intValue == 1) {
+//        NSData *pictureImageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:self.theWBData.middlePictureURL] ];
+//        UIImage *mainImage = [[UIImage alloc] initWithData:pictureImageData];
+//        _pictureImageView = [[UIImageView alloc] initWithImage:mainImage];
+//        //设置imageView的contentMode属性为UIViewContentModeScaleAspectFill，能保证图片比例不变，填充整个ImageView，但可能只有部分图片显示出来
+//        _pictureImageView.contentMode = UIViewContentModeScaleAspectFill;
+//        _pictureImageView.frame = _wbCellFrame.mainImageViewFrame;
+//        [self.contentView addSubview:_pictureImageView];
+//    }else if (self.theWBData.pictureNumber.intValue != 0){
+//        for (int i = 0; i < self.theWBData.pictureNumber.intValue; i++) {
+//            if (self.theWBData.pictureNumber.intValue > 9) {
+//                self.theWBData.pictureNumber = @9;
+//            }
+//            NSData *pictureImageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:[[self.theWBData.pictureURLs objectAtIndex:i] valueForKey:@"thumbnail_pic"] ] ];
+//            UIImage *image = [[UIImage alloc] initWithData:pictureImageData];
+//            UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+//            //设置imageView的contentMode属性为UIViewContentModeScaleAspectFill，能保证图片比例不变，填充整个ImageView，但可能只有部分图片显示出来
+//            imageView.contentMode = UIViewContentModeScaleAspectFill;
+//            imageView.clipsToBounds = YES;
+//            imageView.frame =
+//            [[_wbCellFrame.picturesFrameArray objectAtIndex:i] CGRectValue];
+//            [self.contentView addSubview:imageView];
+//        }
+//    }
     //评论数
     UITextView *commentNumber = [[UITextView alloc] init];
     commentNumber.text = [NSString stringWithFormat:@"评论：%@",self.theWBData.commentsCount];
@@ -167,7 +167,47 @@
     attitudeNumber.scrollEnabled = NO;
     attitudeNumber.font = [UIFont fontWithName:@"Arial" size:15];
     [self.contentView addSubview:attitudeNumber];
+    [self loadImageView];
 }
+
+#pragma mark - loadImageView
+- (void)loadImageView
+{
+    //异步加载imageVIew
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        //图片内容
+        if (self.theWBData.pictureNumber.intValue == 1) {
+            NSData *pictureImageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:self.theWBData.middlePictureURL] ];
+            UIImage *mainImage = [[UIImage alloc] initWithData:pictureImageData];
+            self.pictureImageView = [[UIImageView alloc] initWithImage:mainImage];
+            //设置imageView的contentMode属性为UIViewContentModeScaleAspectFill，能保证图片比例不变，填充整个ImageView，但可能只有部分图片显示出来
+            self.pictureImageView.contentMode = UIViewContentModeScaleAspectFill;
+            self.pictureImageView.frame = self.wbCellFrame.mainImageViewFrame;
+            [self.contentView addSubview:self.pictureImageView];
+        }else if (self.theWBData.pictureNumber.intValue != 0){
+            for (int i = 0; i < self.theWBData.pictureNumber.intValue; i++) {
+                if (self.theWBData.pictureNumber.intValue > 9) {
+                    self.theWBData.pictureNumber = @9;
+                }
+                NSData *pictureImageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:[[self.theWBData.pictureURLs objectAtIndex:i] valueForKey:@"thumbnail_pic"] ] ];
+                UIImage *image = [[UIImage alloc] initWithData:pictureImageData];
+                dispatch_sync(dispatch_get_main_queue(), ^{
+                    UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+                    //设置imageView的contentMode属性为UIViewContentModeScaleAspectFill，能保证图片比例不变，填充整个ImageView，但可能只有部分图片显示出来
+                    imageView.contentMode = UIViewContentModeScaleAspectFill;
+                    imageView.clipsToBounds = YES;
+                    imageView.frame =
+                    [[self.wbCellFrame.picturesFrameArray objectAtIndex:i] CGRectValue];
+                    [self.contentView addSubview:imageView];
+                        });
+            }
+        }
+    });
+    
+    
+    
+}
+
 
 #pragma mark -ButtonMethod
 
@@ -209,13 +249,15 @@
     button.selected = !button.selected;
 }
 
+
+
+
 #pragma mark - UITextViewDelegate
 - (BOOL)textView:(UITextView *)textView shouldInteractWithURL:(NSURL *)URL inRange:(NSRange)characterRange interaction:(UITextItemInteraction)interaction
 {
     [_delegate performSelector:@selector(poenLinkText:) withObject:URL];
     return NO;
 }
-#pragma mark - cellDelegate
 
 
 @end

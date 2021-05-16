@@ -26,7 +26,8 @@
 @property(strong,nonatomic)UIButton *collectButton;
 
 
-- (void)initSubviews;
+- (void)loadSubviews;
+- (void)loadImageView;
 
 @end
 

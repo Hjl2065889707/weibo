@@ -58,7 +58,7 @@
     _wbCellFrame.wbData = cell.theWBData;//该行可以初始化wbCellFrame的所有属性
     cell.wbCellFrame = _wbCellFrame;
     //创建cell的子view的
-    [cell initSubviews];
+    [cell loadSubviews];
 
     return cell;
 }
