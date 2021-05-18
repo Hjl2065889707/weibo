@@ -12,6 +12,7 @@
 @property(strong,nonatomic)NSArray *searchResultDataArray;
 @property(strong,nonatomic)NSMutableArray *browseHistoryArray;
 @property (nonatomic,strong) UISearchController *searchController;
+@property (nonatomic,strong) UserInformation *userInformation;
 @property(strong,nonatomic)AccessToken *accessToken;
 @property(strong,nonatomic)WBCellFrame *wbCellFrame;
 @end
@@ -45,7 +46,6 @@
     UIBarButtonItem *reloadButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"reload.png"] style:UIBarButtonItemStyleDone target:self action:@selector(reloadWBData)];
     self.navigationItem.leftBarButtonItem = reloadButton;
     self.navigationItem.rightBarButtonItem = postButton;
-    [self reloadWBData];
 
 }
 
@@ -137,15 +137,26 @@
 #pragma mark - postWbButtonMethod
 - (void)postWB
 {
-    [WeiboSDK shareToWeibo:@""];
+    [self.navigationController pushViewController:[[PostWBViewController alloc] init] animated:YES];
+ //   [WeiboSDK shareToWeibo:@""];
 }
 
 #pragma mark - DataMethod
 
 
 - (void)reloadWBData
-{
-    [self initAndCheckAccessToken];
+{    
+    self.dataArray = [NSMutableArray array];
+    
+    //加载自己发的微博
+    UserInformation *userInformation = [[UserInformation alloc] init];
+    NSMutableArray *array = [NSMutableArray arrayWithContentsOfFile:userInformation.postedWBFilePath];
+    for(NSDictionary *dic1 in array.reverseObjectEnumerator)//逆向枚举
+    {
+        TheWbData *theWBData = [[TheWbData alloc] init];
+        [theWBData initWithFilePathDictionary:dic1];
+        [_dataArray addObject:theWBData];
+    }
     //请求数据
     NSURLSession *session = [NSURLSession sharedSession];//创建会话对象
     NSString *urlString = [NSString stringWithFormat:@"https://api.weibo.com/2/statuses/home_timeline.json?access_token=%@",self.accessToken.access_token];
@@ -156,17 +167,17 @@
         NSDictionary *tempDic = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
         //获取dic中要用到的信息
         NSArray *statuesArray = [tempDic valueForKey:@"statuses"];
-        //该数组用来存放theWBData对象
-        NSMutableArray *dataArray = [[NSMutableArray alloc] init];
+        
+
         //将传回的数据转换为theWBData对象并存入数组
         for(NSDictionary *dic in statuesArray)
         {
             TheWbData *theWBData = [[TheWbData alloc] init];
             [theWBData initWithWebDictionary:dic];
-            [dataArray addObject:theWBData];
+            [self.dataArray addObject:theWBData];
         }
 
-        self.dataArray = dataArray;
+       
         //同步回到主线程
         dispatch_sync(dispatch_get_main_queue(), ^{
             [self.tableView reloadData];
@@ -212,9 +223,14 @@
                 loginViewController.delegate = self;
                 [self.navigationController pushViewController:loginViewController animated:YES];
             });
-        }
-        //未过期则创建UserInformation单例
-        [self initUserInformation];
+        }else{
+            //如果没有过期
+                dispatch_sync(dispatch_get_main_queue(), ^{
+                    //未过期则创建UserInformation单例
+                    [self initUserInformation];
+                });
+              }
+        
     }];
 
     [dataTask resume];
@@ -222,18 +238,26 @@
 #pragma mark - initUserInformation
 - (void)initUserInformation
 {
-    //根据access_token获得当前用户id，并创建UserInformation单例
-    UserInformation *userInformation = [[UserInformation alloc] init];
-    NSURLSession *session = [NSURLSession sharedSession];//创建会话对象
-    NSString *urlString = [NSString stringWithFormat:@"https://api.weibo.com/2/account/get_uid.json?access_token=%@",self.accessToken.access_token];
-    NSURL *url = [NSURL URLWithString:urlString];
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-    NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
-        userInformation.userId = [dic valueForKey:@"uid"];
-    }];
+    if (_userInformation == nil) {
+        //根据access_token获得当前用户id，并创建UserInformation单例
+        _userInformation = [[UserInformation alloc] init];
+        NSURLSession *session = [NSURLSession sharedSession];//创建会话对象
+        NSString *urlString = [NSString stringWithFormat:@"https://api.weibo.com/2/account/get_uid.json?access_token=%@",self.accessToken.access_token];
+        NSURL *url = [NSURL URLWithString:urlString];
+        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+        NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
+            self.userInformation.userId = [dic valueForKey:@"uid"];
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                [self reloadWBData];
+            });
+            
+        }];
+        [dataTask resume];
+
+    }
+
     
-    [dataTask resume];
     
 }
 

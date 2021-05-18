@@ -174,24 +174,37 @@
 - (void)loadImageView
 {
     //异步加载imageVIew
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        //图片内容
-        if (self.theWBData.pictureNumber.intValue == 1) {
+
+    //图片内容
+    if (self.theWBData.pictureNumber.intValue == 1) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             NSData *pictureImageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:self.theWBData.middlePictureURL] ];
             UIImage *mainImage = [[UIImage alloc] initWithData:pictureImageData];
-            self.pictureImageView = [[UIImageView alloc] initWithImage:mainImage];
-            //设置imageView的contentMode属性为UIViewContentModeScaleAspectFill，能保证图片比例不变，填充整个ImageView，但可能只有部分图片显示出来
-            self.pictureImageView.contentMode = UIViewContentModeScaleAspectFill;
-            self.pictureImageView.frame = self.wbCellFrame.mainImageViewFrame;
-            [self.contentView addSubview:self.pictureImageView];
-        }else if (self.theWBData.pictureNumber.intValue != 0){
+            
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                self.pictureImageView = [[UIImageView alloc] initWithImage:mainImage];
+                //设置imageView的contentMode属性为UIViewContentModeScaleAspectFill，能保证图片比例不变，填充整个ImageView，但可能只有部分图片显示出来
+                self.pictureImageView.contentMode = UIViewContentModeScaleAspectFill;
+                self.pictureImageView.frame = self.wbCellFrame.mainImageViewFrame;
+                [self.contentView addSubview:self.pictureImageView];
+                    });
+        });
+        
+        
+    }else if (self.theWBData.pictureNumber.intValue > 1){
+        NSLog(@"%d = %lu ",self.theWBData.pictureNumber.intValue,(unsigned long)self.wbCellFrame.picturesFrameArray.count);
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             for (int i = 0; i < self.theWBData.pictureNumber.intValue; i++) {
-                if (self.theWBData.pictureNumber.intValue > 9) {
-                    self.theWBData.pictureNumber = @9;
-                }
-                NSData *pictureImageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:[[self.theWBData.pictureURLs objectAtIndex:i] valueForKey:@"thumbnail_pic"] ] ];
-                UIImage *image = [[UIImage alloc] initWithData:pictureImageData];
-                dispatch_sync(dispatch_get_main_queue(), ^{
+                NSLog(@" intValue = %d",self.theWBData.pictureNumber.intValue);
+                    if (self.theWBData.pictureNumber.intValue > 9) {
+                        self.theWBData.pictureNumber = @9;
+                    }
+            NSData *pictureImageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:[[self.theWBData.pictureURLs objectAtIndex:i] valueForKey:@"thumbnail_pic"] ] ];
+            UIImage *image = [[UIImage alloc] initWithData:pictureImageData];
+            
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                if (self.wbCellFrame.picturesFrameArray.count > 1) {
                     UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
                     //设置imageView的contentMode属性为UIViewContentModeScaleAspectFill，能保证图片比例不变，填充整个ImageView，但可能只有部分图片显示出来
                     imageView.contentMode = UIViewContentModeScaleAspectFill;
@@ -199,12 +212,13 @@
                     imageView.frame =
                     [[self.wbCellFrame.picturesFrameArray objectAtIndex:i] CGRectValue];
                     [self.contentView addSubview:imageView];
-                        });
+                }
+                
+
+                    });
             }
-        }
-    });
-    
-    
+        });
+    }
     
 }
 

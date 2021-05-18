@@ -35,6 +35,7 @@
 		E1434F88264C3D2E00C21028 /* BrowseHistoryTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1434F87264C3D2E00C21028 /* BrowseHistoryTableViewController.m */; };
 		E1434F8B264D699300C21028 /* WebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1434F8A264D699300C21028 /* WebViewController.m */; };
 		E1434F8E264D8DDD00C21028 /* CollectButton.m in Sources */ = {isa = PBXBuildFile; fileRef = E1434F8D264D8DDD00C21028 /* CollectButton.m */; };
+		E1434F9126524E9800C21028 /* PostWBViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1434F9026524E9800C21028 /* PostWBViewController.m */; };
 		E1D274FC26480568004EC053 /* AccessToken.m in Sources */ = {isa = PBXBuildFile; fileRef = E1D274FB26480568004EC053 /* AccessToken.m */; };
 		E1D2750026482989004EC053 /* TheWbData.m in Sources */ = {isa = PBXBuildFile; fileRef = E1D274FF26482989004EC053 /* TheWbData.m */; };
 		E1D2750626490429004EC053 /* WBCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E1D2750526490429004EC053 /* WBCell.m */; };
@@ -85,6 +86,8 @@
 		E1434F8A264D699300C21028 /* WebViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WebViewController.m; sourceTree = "<group>"; };
 		E1434F8C264D8DDD00C21028 /* CollectButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CollectButton.h; sourceTree = "<group>"; };
 		E1434F8D264D8DDD00C21028 /* CollectButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CollectButton.m; sourceTree = "<group>"; };
+		E1434F8F26524E9800C21028 /* PostWBViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PostWBViewController.h; sourceTree = "<group>"; };
+		E1434F9026524E9800C21028 /* PostWBViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PostWBViewController.m; sourceTree = "<group>"; };
 		E1D274FA26480568004EC053 /* AccessToken.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AccessToken.h; sourceTree = "<group>"; };
 		E1D274FB26480568004EC053 /* AccessToken.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AccessToken.m; sourceTree = "<group>"; };
 		E1D274FE26482989004EC053 /* TheWbData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TheWbData.h; sourceTree = "<group>"; };
@@ -219,6 +222,8 @@
 				E1434F8A264D699300C21028 /* WebViewController.m */,
 				E1434F8C264D8DDD00C21028 /* CollectButton.h */,
 				E1434F8D264D8DDD00C21028 /* CollectButton.m */,
+				E1434F8F26524E9800C21028 /* PostWBViewController.h */,
+				E1434F9026524E9800C21028 /* PostWBViewController.m */,
 			);
 			path = HomePageViewControllers;
 			sourceTree = "<group>";
@@ -353,6 +358,7 @@
 				E1D2750C264A6127004EC053 /* WBCellFrame.m in Sources */,
 				E1434F8E264D8DDD00C21028 /* CollectButton.m in Sources */,
 				E1434F8B264D699300C21028 /* WebViewController.m in Sources */,
+				E1434F9126524E9800C21028 /* PostWBViewController.m in Sources */,
 				E1DA8C8D263E91DB00C78485 /* HomePageTableViewController.m in Sources */,
 				E14245AF263BBC5D00DCFF3B /* AppDelegate.m in Sources */,
 				E1D2750626490429004EC053 /* WBCell.m in Sources */,

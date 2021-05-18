@@ -24,6 +24,6 @@
     NSString *docPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
     _browseHistoryFilePath = [NSString stringWithFormat:@"%@/%@browseHistory.plist",docPath,userId];
     _collectFilePath = [NSString stringWithFormat:@"%@/%@collect.plist",docPath,userId];
-    
+    _postedWBFilePath = [NSString stringWithFormat:@"%@/%@postedWB.plist",docPath,userId];
 }
 @end
