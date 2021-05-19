@@ -7,12 +7,12 @@
 
 #import "HomePageTableViewController.h"
 
-@interface HomePageTableViewController ()<UITableViewDelegate,UITableViewDataSource,UISearchBarDelegate,UISearchResultsUpdating,TheWBCellDelegate,LoginViewControllerDelegate,PostWBViewControllerDelegate>
+@interface HomePageTableViewController ()<UITableViewDelegate,UITableViewDataSource,UISearchBarDelegate,UISearchResultsUpdating,TheWBCellDelegate,LoginViewControllerDelegate,PostWBViewControllerDelegate,UIGestureRecognizerDelegate>
 @property(strong,nonatomic)NSMutableArray *dataArray;
 @property(strong,nonatomic)NSArray *searchResultDataArray;
 @property(strong,nonatomic)NSMutableArray *browseHistoryArray;
-@property (nonatomic,strong) UISearchController *searchController;
-@property (nonatomic,strong) UserInformation *userInformation;
+@property (nonatomic,strong)UISearchController *searchController;
+@property (nonatomic,strong)UserInformation *userInformation;
 @property(strong,nonatomic)AccessToken *accessToken;
 @property(strong,nonatomic)WBCellFrame *wbCellFrame;
 @end
@@ -24,6 +24,11 @@
     
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
+    //cell的点击事件
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tableViewClick:)];
+    tapGesture.delegate = self;
+    [self.tableView addGestureRecognizer:tapGesture];
+
     //下拉刷新
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
     refreshControl.attributedTitle = [[NSAttributedString alloc]initWithString:@"下拉刷新"];
@@ -49,7 +54,7 @@
     
     UIBarButtonItem *postButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"post.png"] style:UIBarButtonItemStyleDone target:self action:@selector(postWB)];
     
-    UIBarButtonItem *reloadButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"reload.png"] style:UIBarButtonItemStyleDone target:self action:@selector(reloadWBData)];
+    UIBarButtonItem *reloadButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"reload.png"] style:UIBarButtonItemStyleDone target:self action:@selector(loadMoreWB)];
     self.navigationItem.leftBarButtonItem = reloadButton;
     self.navigationItem.rightBarButtonItem = postButton;
 
@@ -100,7 +105,8 @@
     cell.wbCellFrame = _wbCellFrame;
     //创建cell的子view的
     [cell loadSubviews];
-
+ 
+    
     return cell;
 }
 
@@ -112,6 +118,80 @@
 //cell被选择时将其加入browseHistoryArray并保存到本地
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    NSLog(@"select");
+//    //获取当前用户信息，用于获取文件目录
+//    UserInformation *userInformation = [[UserInformation alloc] init];
+//    //从文件中获取数据
+//    self.browseHistoryArray = [[NSMutableArray alloc] initWithContentsOfFile:userInformation.browseHistoryFilePath];
+//    //文件为空则创建数组
+//    if (self.browseHistoryArray == nil) {
+//            self.browseHistoryArray = [[NSMutableArray alloc] init];
+//    }
+//    //删除重复的微博(根据用户名和微博发布时间判断)
+//    TheWbData *wbData = self.dataArray[indexPath.row];
+//    for (int i = 0;i<self.browseHistoryArray.count;i++) {
+//        NSDictionary *dic = self.browseHistoryArray[i];
+//        if ([wbData.creatTime isEqualToString:[dic valueForKey:@"created_at"]] && [wbData.name isEqualToString:[dic valueForKey:@"name"]]) {
+//            [self.browseHistoryArray removeObjectAtIndex:i];
+//        }
+//    }
+//    //历史记录不超过50条
+//    if (self.browseHistoryArray.count > 50) {
+//        [self.browseHistoryArray removeObjectAtIndex:0];
+//    }
+//    //添加当前微博的数据到数组中
+//    [self.browseHistoryArray addObject:[TheWbData initDicitonaryWithTheWbData:wbData]];
+//    //写入数据
+//    NSArray *array = [[NSArray alloc] initWithArray:self.browseHistoryArray];
+//    [array writeToFile:userInformation.browseHistoryFilePath atomically:NO];
+
+}
+
+ - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSLog(@"row = %lu,count = %lu",indexPath.row,_dataArray.count);
+    //如果要展示最后一个cell，则加载更多数据
+    if (indexPath.row == (_dataArray.count-1)) {
+        TheWbData *tempData = _dataArray.lastObject;
+        NSLog(@"WBid = %lu",tempData.wbId.longValue);
+        //请求数据
+        NSURLSession *session = [NSURLSession sharedSession];//创建会话对象
+        NSString *urlString = [NSString stringWithFormat:@"https://api.weibo.com/2/statuses/home_timeline.json?access_token=%@&max_id=%lu&count=20",self.accessToken.access_token,tempData.wbId.longValue];
+        NSURL *url = [NSURL URLWithString:urlString];
+        
+        NSLog(@"%@",url.query);
+        
+        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+        NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+            //将获取到的数据转成字典
+            NSDictionary *tempDic = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
+            //获取dic中要用到的信息
+            NSMutableArray *statuesArray =[NSMutableArray arrayWithArray:[tempDic valueForKey:@"statuses"] ];
+            [statuesArray removeObject:statuesArray.firstObject];
+            //将传回的数据转换为theWBData对象并存入数组
+            for(NSDictionary *dic in statuesArray)
+            {
+                TheWbData *theWBData = [[TheWbData alloc] init];
+                [theWBData initWithWebDictionary:dic];
+                [self.dataArray addObject:theWBData];
+            }//同步回到主线程
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                [self.tableView reloadData];
+            });
+            
+        }];
+        //执行任务
+        [dataTask resume];
+    }
+    
+    
+}
+
+#pragma mark - 点击事件
+- (void)tableViewClick:(UIGestureRecognizer *)gestureRecognizer {
+    NSLog(@"click!");
+    CGPoint point = [gestureRecognizer locationInView:self.tableView];
+    NSIndexPath *indexpath = [self.tableView indexPathForRowAtPoint:point];
     //获取当前用户信息，用于获取文件目录
     UserInformation *userInformation = [[UserInformation alloc] init];
     //从文件中获取数据
@@ -121,7 +201,7 @@
             self.browseHistoryArray = [[NSMutableArray alloc] init];
     }
     //删除重复的微博(根据用户名和微博发布时间判断)
-    TheWbData *wbData = self.dataArray[indexPath.row];
+    TheWbData *wbData = self.dataArray[indexpath.row];
     for (int i = 0;i<self.browseHistoryArray.count;i++) {
         NSDictionary *dic = self.browseHistoryArray[i];
         if ([wbData.creatTime isEqualToString:[dic valueForKey:@"created_at"]] && [wbData.name isEqualToString:[dic valueForKey:@"name"]]) {
@@ -137,9 +217,14 @@
     //写入数据
     NSArray *array = [[NSArray alloc] initWithArray:self.browseHistoryArray];
     [array writeToFile:userInformation.browseHistoryFilePath atomically:NO];
-        
-        
+
 }
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
+{
+    return YES;
+}
+
 #pragma mark - postWbButtonMethod
 - (void)postWB
 {
@@ -159,6 +244,7 @@
     //加载自己发的微博
     UserInformation *userInformation = [[UserInformation alloc] init];
     NSMutableArray *array = [NSMutableArray arrayWithContentsOfFile:userInformation.postedWBFilePath];
+    
     for(NSDictionary *dic1 in array.reverseObjectEnumerator)//逆向枚举
     {
         TheWbData *theWBData = [[TheWbData alloc] init];
@@ -167,7 +253,7 @@
     }
     //请求数据
     NSURLSession *session = [NSURLSession sharedSession];//创建会话对象
-    NSString *urlString = [NSString stringWithFormat:@"https://api.weibo.com/2/statuses/home_timeline.json?access_token=%@",self.accessToken.access_token];
+    NSString *urlString = [NSString stringWithFormat:@"https://api.weibo.com/2/statuses/home_timeline.json?access_token=%@&count=30",self.accessToken.access_token];
     NSURL *url = [NSURL URLWithString:urlString];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
@@ -175,7 +261,6 @@
         NSDictionary *tempDic = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
         //获取dic中要用到的信息
         NSArray *statuesArray = [tempDic valueForKey:@"statuses"];
-        
 
         //将传回的数据转换为theWBData对象并存入数组
         for(NSDictionary *dic in statuesArray)
@@ -302,7 +387,36 @@
 
 - (void)loadMoreWB
 {
-    
+        TheWbData *tempData = _dataArray.lastObject;
+        NSLog(@"WBid = %lu",tempData.wbId.longValue);
+        //请求数据
+        NSURLSession *session = [NSURLSession sharedSession];//创建会话对象
+        NSString *urlString = [NSString stringWithFormat:@"https://api.weibo.com/2/statuses/home_timeline.json?access_token=%@&max_id=%lu&count=20",self.accessToken.access_token,tempData.wbId.longValue];
+        NSURL *url = [NSURL URLWithString:urlString];
+        
+        NSLog(@"%@",url.query);
+        
+        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+        NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+            //将获取到的数据转成字典
+            NSDictionary *tempDic = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
+            //获取dic中要用到的信息
+            NSMutableArray *statuesArray =[NSMutableArray arrayWithArray:[tempDic valueForKey:@"statuses"] ];
+            [statuesArray removeObject:statuesArray.firstObject];
+            //将传回的数据转换为theWBData对象并存入数组
+            for(NSDictionary *dic in statuesArray)
+            {
+                TheWbData *theWBData = [[TheWbData alloc] init];
+                [theWBData initWithWebDictionary:dic];
+                [self.dataArray addObject:theWBData];
+            }//同步回到主线程
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                [self.tableView reloadData];
+            });
+            
+        }];
+        //执行任务
+        [dataTask resume];
 }
 
 

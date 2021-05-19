@@ -106,7 +106,6 @@
             //linkText:字符为🔗网页链接，蓝色，font为18，已设置LinkAttribute
             NSMutableAttributedString *linkText = [[NSMutableAttributedString alloc] initWithString:@"🔗网页链接" attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18],NSForegroundColorAttributeName:[UIColor blueColor],NSLinkAttributeName:result.URL} ];
             NSValue *range = [NSValue valueWithRange:result.range];
-            NSLog(@"%@",result.URL);
             NSDictionary *dic = @{@"linkText":linkText,@"range":range};
             [linkTextArray addObject:dic];
         }
@@ -192,7 +191,6 @@
         
         
     }else if (self.theWBData.pictureNumber.intValue > 1){
-        NSLog(@"%d = %lu ",self.theWBData.pictureNumber.intValue,(unsigned long)self.wbCellFrame.picturesFrameArray.count);
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             for (int i = 0; i < self.theWBData.pictureNumber.intValue; i++) {
@@ -271,6 +269,7 @@
     [_delegate performSelector:@selector(poenLinkText:) withObject:URL];
     return NO;
 }
+
 
 
 @end

@@ -62,11 +62,12 @@
             self.token = [dic valueForKey:@"access_token"];
             NSString *docPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
             NSString *filePath = [NSString stringWithFormat:@"%@/accessToken.plist",docPath];
-            //获取文件路径
+            //获取文件路径,保存accessToken到本地
             if ([self.token writeToFile:filePath atomically:NO encoding:NSUTF8StringEncoding error:nil]) {
                 NSLog(@"写入成功！！！");
-            }//保存accessToken到本地
-
+            }
+            
+            //更新AccessToken单例
             AccessToken *token = [[AccessToken alloc] init];
             token.access_token = self.token;
             NSLog(@"token = %@",self.token);
