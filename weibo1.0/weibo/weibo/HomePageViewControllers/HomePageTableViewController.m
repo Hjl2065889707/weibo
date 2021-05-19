@@ -105,7 +105,6 @@
     cell.wbCellFrame = _wbCellFrame;
     //创建cell的子view的
     [cell loadSubviews];
- 
     
     return cell;
 }
