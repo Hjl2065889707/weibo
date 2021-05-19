@@ -81,6 +81,9 @@
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+//    if (self.tableView.refreshControl.refreshing) {
+//        return nil;
+//    }
     WBCell *cell = [tableView dequeueReusableCellWithIdentifier:@"id"];//从复用回收池中取cell
     if(!cell){//如果取不到就让cell=新建cell
         cell = [[WBCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"id"];
@@ -93,7 +96,7 @@
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     //根据搜索栏是否激活设置theWBData
     if (self.searchController.active == NO) {
-        cell.theWBData = self.dataArray[indexPath.row];
+        cell.theWBData = _dataArray[indexPath.row];
     }else{
             cell.theWBData = _searchResultDataArray[indexPath.row];
     }
@@ -105,6 +108,7 @@
     cell.wbCellFrame = _wbCellFrame;
     //创建cell的子view的
     [cell loadSubviews];
+
     
     return cell;
 }
@@ -114,37 +118,6 @@
     return _wbCellFrame.attitudeTextViewFrame.origin.y+40;//设置cell的高度
 }
 
-//cell被选择时将其加入browseHistoryArray并保存到本地
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    NSLog(@"select");
-//    //获取当前用户信息，用于获取文件目录
-//    UserInformation *userInformation = [[UserInformation alloc] init];
-//    //从文件中获取数据
-//    self.browseHistoryArray = [[NSMutableArray alloc] initWithContentsOfFile:userInformation.browseHistoryFilePath];
-//    //文件为空则创建数组
-//    if (self.browseHistoryArray == nil) {
-//            self.browseHistoryArray = [[NSMutableArray alloc] init];
-//    }
-//    //删除重复的微博(根据用户名和微博发布时间判断)
-//    TheWbData *wbData = self.dataArray[indexPath.row];
-//    for (int i = 0;i<self.browseHistoryArray.count;i++) {
-//        NSDictionary *dic = self.browseHistoryArray[i];
-//        if ([wbData.creatTime isEqualToString:[dic valueForKey:@"created_at"]] && [wbData.name isEqualToString:[dic valueForKey:@"name"]]) {
-//            [self.browseHistoryArray removeObjectAtIndex:i];
-//        }
-//    }
-//    //历史记录不超过50条
-//    if (self.browseHistoryArray.count > 50) {
-//        [self.browseHistoryArray removeObjectAtIndex:0];
-//    }
-//    //添加当前微博的数据到数组中
-//    [self.browseHistoryArray addObject:[TheWbData initDicitonaryWithTheWbData:wbData]];
-//    //写入数据
-//    NSArray *array = [[NSArray alloc] initWithArray:self.browseHistoryArray];
-//    [array writeToFile:userInformation.browseHistoryFilePath atomically:NO];
-
-}
 
  - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -237,25 +210,27 @@
 
 
 - (void)reloadWBData
-{    
-    self.dataArray = [NSMutableArray array];
+{
     
-    //加载自己发的微博
-    UserInformation *userInformation = [[UserInformation alloc] init];
-    NSMutableArray *array = [NSMutableArray arrayWithContentsOfFile:userInformation.postedWBFilePath];
     
-    for(NSDictionary *dic1 in array.reverseObjectEnumerator)//逆向枚举
-    {
-        TheWbData *theWBData = [[TheWbData alloc] init];
-        [theWBData initWithFilePathDictionary:dic1];
-        [_dataArray addObject:theWBData];
-    }
     //请求数据
     NSURLSession *session = [NSURLSession sharedSession];//创建会话对象
     NSString *urlString = [NSString stringWithFormat:@"https://api.weibo.com/2/statuses/home_timeline.json?access_token=%@&count=30",self.accessToken.access_token];
     NSURL *url = [NSURL URLWithString:urlString];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        
+        self.dataArray = [NSMutableArray array];
+        //加载自己发的微博
+        UserInformation *userInformation = [[UserInformation alloc] init];
+        NSMutableArray *array = [NSMutableArray arrayWithContentsOfFile:userInformation.postedWBFilePath];
+        
+        for(NSDictionary *dic1 in array.reverseObjectEnumerator)//逆向枚举
+        {
+            TheWbData *theWBData = [[TheWbData alloc] init];
+            [theWBData initWithFilePathDictionary:dic1];
+            [self.dataArray addObject:theWBData];
+        }
         //将获取到的数据转成字典
         NSDictionary *tempDic = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
         //获取dic中要用到的信息

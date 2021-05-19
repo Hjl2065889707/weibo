@@ -136,11 +136,7 @@
             }
     }
     [self.contentView addSubview:collectButton];
-    
-    
-    
-    
-    
+
     //异步加载耗时的view
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         //头像图片
@@ -173,6 +169,9 @@
                 for (int i = 0; i < self.theWBData.pictureNumber.intValue; i++) {
                 NSData *pictureImageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:[[self.theWBData.pictureURLs objectAtIndex:i] valueForKey:@"thumbnail_pic"] ] ];
                 UIImage *image = [[UIImage alloc] initWithData:pictureImageData];
+                    if (image == nil) {
+                        image = [UIImage imageNamed:@"loadFail"];
+                    }
                     [imageArray addObject:image];
                 }
             dispatch_sync(dispatch_get_main_queue(), ^{
@@ -190,144 +189,8 @@
             });
         }
     });
-
-    
-//    //收藏按钮
-//    CollectButton *collectButton = [[CollectButton alloc] init];
-//    [collectButton setImage:[UIImage imageNamed:@"collect-no.png"] forState:UIControlStateNormal];
-//       [collectButton setImage:[UIImage imageNamed:@"collect-yes.png"] forState:UIControlStateSelected];
-//    [collectButton addTarget:self action:@selector(collectButtonClick:) forControlEvents:UIControlEventTouchUpInside];
-//    collectButton.frame = self.wbCellFrame.collectButtonFrame;
-//    _collectButton = collectButton;
-//    [self.contentView addSubview:collectButton];
-//    //获取当前用户信息，用于获取文件目录
-//    UserInformation *userInformation = [[UserInformation alloc] init];
-//    //从文件中获取数据
-//    self.collectArray = [[NSMutableArray alloc] initWithContentsOfFile:userInformation.collectFilePath];
-//    //文件为空则创建数组
-//    if (self.collectArray == nil) {
-//            self.collectArray = [[NSMutableArray alloc] init];
-//    }
-//    TheWbData *wbData = self.theWBData;
-//    //如果数组中存在该微博，则收藏按钮状态为yes
-//    for (int i = 0;i<self.collectArray.count;i++) {
-//        NSDictionary *dic = self.collectArray[i];
-//        if ([wbData.creatTime isEqualToString:[dic valueForKey:@"created_at"]] && [wbData.name isEqualToString:[dic valueForKey:@"name"]]) {
-//            _collectButton.selected = YES;
-//            }
-//    }
-
-//    //文字内容
-//    UITextView *mainTextView = [[UITextView alloc] init];
-//    mainTextView.frame = self.wbCellFrame.mainTextViewFrame;
-//    mainTextView.editable = NO;
-//    mainTextView.scrollEnabled = NO;
-//    mainTextView.delegate = self;
-//    [self.contentView addSubview:mainTextView];
-//
-//    NSMutableAttributedString *mainText = [[NSMutableAttributedString alloc] initWithString:self.theWBData.text attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18]} ];
-//    NSMutableArray *linkTextArray = [NSMutableArray array];
-//    //利用NSDataDetector来找到文字中的链接,并对链接进行处理
-//    NSDataDetector *detector = [NSDataDetector dataDetectorWithTypes:NSTextCheckingTypeLink error:nil];
-//    [detector enumerateMatchesInString:self.theWBData.text
-//                               options:0
-//                                 range:NSMakeRange(0, [self.theWBData.text length])
-//                            usingBlock:
-//    ^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
-//        //如果存在链接,将该链接的range和NSMutableAttributedString存入linkTextArray
-//        if (result.range.length > 0) {
-//            //linkText:字符为🔗网页链接，蓝色，font为18，已设置LinkAttribute
-//            NSMutableAttributedString *linkText = [[NSMutableAttributedString alloc] initWithString:@"🔗网页链接" attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18],NSForegroundColorAttributeName:[UIColor blueColor],NSLinkAttributeName:result.URL} ];
-//            NSValue *range = [NSValue valueWithRange:result.range];
-//            NSDictionary *dic = @{@"linkText":linkText,@"range":range};
-//            [linkTextArray addObject:dic];
-//        }
-//    }];
-//    //将指定range中的文本替换为linktext
-//    while (linkTextArray.count > 0) {
-//        [mainText replaceCharactersInRange:[[[linkTextArray lastObject] valueForKey:@"range"] rangeValue] withAttributedString:[[linkTextArray lastObject] valueForKey:@"linkText"] ];
-//        [linkTextArray removeLastObject];
-//    }
-//    mainTextView.attributedText = mainText;
-    
-//    //图片内容
-//    if (self.theWBData.pictureNumber.intValue == 1) {
-//        NSData *pictureImageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:self.theWBData.middlePictureURL] ];
-//        UIImage *mainImage = [[UIImage alloc] initWithData:pictureImageData];
-//        _pictureImageView = [[UIImageView alloc] initWithImage:mainImage];
-//        //设置imageView的contentMode属性为UIViewContentModeScaleAspectFill，能保证图片比例不变，填充整个ImageView，但可能只有部分图片显示出来
-//        _pictureImageView.contentMode = UIViewContentModeScaleAspectFill;
-//        _pictureImageView.frame = self.wbCellFrame.mainImageViewFrame;
-//        [self.contentView addSubview:_pictureImageView];
-//    }else if (self.theWBData.pictureNumber.intValue != 0){
-//        for (int i = 0; i < self.theWBData.pictureNumber.intValue; i++) {
-//            if (self.theWBData.pictureNumber.intValue > 9) {
-//                self.theWBData.pictureNumber = @9;
-//            }
-//            NSData *pictureImageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:[[self.theWBData.pictureURLs objectAtIndex:i] valueForKey:@"thumbnail_pic"] ] ];
-//            UIImage *image = [[UIImage alloc] initWithData:pictureImageData];
-//            UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
-//            //设置imageView的contentMode属性为UIViewContentModeScaleAspectFill，能保证图片比例不变，填充整个ImageView，但可能只有部分图片显示出来
-//            imageView.contentMode = UIViewContentModeScaleAspectFill;
-//            imageView.clipsToBounds = YES;
-//            imageView.frame =
-//            [[self.wbCellFrame.picturesFrameArray objectAtIndex:i] CGRectValue];
-//            [self.contentView addSubview:imageView];
-//        }
-//    }
-
-  //  [self loadImageView];
 }
 
-#pragma mark - loadImageView
-- (void)loadImageView
-{
-    //异步加载imageVIew
-
-    //图片内容
-    if (self.theWBData.pictureNumber.intValue == 1) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            NSData *pictureImageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:self.theWBData.middlePictureURL] ];
-            UIImage *mainImage = [[UIImage alloc] initWithData:pictureImageData];
-            
-            dispatch_sync(dispatch_get_main_queue(), ^{
-                self.pictureImageView = [[UIImageView alloc] initWithImage:mainImage];
-                //设置imageView的contentMode属性为UIViewContentModeScaleAspectFill，能保证图片比例不变，填充整个ImageView，但可能只有部分图片显示出来
-                self.pictureImageView.contentMode = UIViewContentModeScaleAspectFill;
-                self.pictureImageView.frame = self.wbCellFrame.mainImageViewFrame;
-                [self.contentView addSubview:self.pictureImageView];
-                    });
-        });
-        
-        
-    }else if (self.theWBData.pictureNumber.intValue > 1){
-        
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            for (int i = 0; i < self.theWBData.pictureNumber.intValue; i++) {
-                    if (self.theWBData.pictureNumber.intValue > 9) {
-                        self.theWBData.pictureNumber = @9;
-                    }
-            NSData *pictureImageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:[[self.theWBData.pictureURLs objectAtIndex:i] valueForKey:@"thumbnail_pic"] ] ];
-            UIImage *image = [[UIImage alloc] initWithData:pictureImageData];
-            
-            dispatch_sync(dispatch_get_main_queue(), ^{
-                if (self.wbCellFrame.picturesFrameArray.count > 1) {
-                    UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
-                    //设置imageView的contentMode属性为UIViewContentModeScaleAspectFill，能保证图片比例不变，填充整个ImageView，但可能只有部分图片显示出来
-                    imageView.contentMode = UIViewContentModeScaleAspectFill;
-                    imageView.clipsToBounds = YES;
-                    imageView.frame =
-                    [[self.wbCellFrame.picturesFrameArray objectAtIndex:i] CGRectValue];
-                    [self.contentView addSubview:imageView];
-                }
-                
-
-                    });
-            }
-        });
-    }
-    
-}
 
 
 #pragma mark -ButtonMethod
