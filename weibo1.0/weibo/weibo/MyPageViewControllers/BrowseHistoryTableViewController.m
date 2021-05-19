@@ -10,7 +10,11 @@
 #import "TheWbData.h"
 #import "WBCellFrame.h"
 #import "WBCell.h"
-@interface BrowseHistoryTableViewController ()<UITableViewDelegate,UITableViewDataSource>
+#import <WebKit/WebKit.h>
+#import "WebViewController.h"
+
+
+@interface BrowseHistoryTableViewController ()<UITableViewDelegate,UITableViewDataSource,TheWBCellDelegate>
 @property(strong,nonatomic)NSMutableArray *browseHistoryArray;
 @property(strong,nonatomic)WBCellFrame *wbCellFrame;
 
@@ -48,6 +52,7 @@
     }
     //设置cell被选中时不变灰
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    cell.delegate = self;
     //设置theWBData
     TheWbData *wbdata = [[TheWbData alloc] init];
     [wbdata initWithFilePathDictionary:self.browseHistoryArray[indexPath.row]];
@@ -66,6 +71,13 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return _wbCellFrame.attitudeTextViewFrame.origin.y+40;//设置cell的高度
+}
+
+- (void)poenLinkText:(NSURL *)url
+{
+    WebViewController *webViewController = [[WebViewController alloc] init];
+    webViewController.url = url;
+    [self.navigationController pushViewController:webViewController animated:YES];
 }
 
 @end

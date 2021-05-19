@@ -7,9 +7,16 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol PostWBViewControllerDelegate <NSObject>
+
+- (void)reloadTabelViewData;
+
+@end
 NS_ASSUME_NONNULL_BEGIN
 
 @interface PostWBViewController : UIViewController
+
+@property(weak,nonatomic)id<PostWBViewControllerDelegate> delegate;
 
 @end
 

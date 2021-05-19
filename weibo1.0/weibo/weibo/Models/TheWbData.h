@@ -22,6 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(strong,nonatomic)NSNumber *repostsCount;
 @property(strong,nonatomic)NSNumber *commentsCount;
 @property(strong,nonatomic)NSNumber *userId;
+@property(strong,nonatomic)NSNumber *wbId;
 @property(strong,nonatomic)NSArray *pictureURLs;
 
 - (void)initWithWebDictionary:(NSDictionary *)dic;

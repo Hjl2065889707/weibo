@@ -7,7 +7,7 @@
 
 #import "HomePageTableViewController.h"
 
-@interface HomePageTableViewController ()<UITableViewDelegate,UITableViewDataSource,UISearchBarDelegate,UISearchResultsUpdating,TheWBCellDelegate,LoginViewControllerDelegate>
+@interface HomePageTableViewController ()<UITableViewDelegate,UITableViewDataSource,UISearchBarDelegate,UISearchResultsUpdating,TheWBCellDelegate,LoginViewControllerDelegate,PostWBViewControllerDelegate>
 @property(strong,nonatomic)NSMutableArray *dataArray;
 @property(strong,nonatomic)NSArray *searchResultDataArray;
 @property(strong,nonatomic)NSMutableArray *browseHistoryArray;
@@ -30,6 +30,12 @@
     [refreshControl addTarget:self action:@selector(reloadWBData) forControlEvents:UIControlEventValueChanged];
     self.tableView.refreshControl = refreshControl;
 
+    //上拉加载
+    UIRefreshControl *loadMoreRefreshControl = [[UIRefreshControl alloc] init];
+    loadMoreRefreshControl.attributedTitle = [[NSAttributedString alloc]initWithString:@"上拉加载"];
+    [loadMoreRefreshControl addTarget:self action:@selector(loadMoreWB) forControlEvents:UIControlEventValueChanged];
+ //   self.tableView.tableFooterView = loadMoreRefreshControl;
+    
     //searchbar
     self.searchController = [[UISearchController alloc] initWithSearchResultsController:nil];//初始化
     self.searchController.searchResultsUpdater = self;//设置代理对象
@@ -137,7 +143,9 @@
 #pragma mark - postWbButtonMethod
 - (void)postWB
 {
-    [self.navigationController pushViewController:[[PostWBViewController alloc] init] animated:YES];
+    PostWBViewController *postWBViewController = [[PostWBViewController alloc] init];
+    postWBViewController.delegate = self;
+    [self.navigationController pushViewController:postWBViewController animated:YES];
  //   [WeiboSDK shareToWeibo:@""];
 }
 
@@ -291,6 +299,12 @@
 - (void)reloadTabelViewData {
     [self reloadWBData];
 }
+
+- (void)loadMoreWB
+{
+    
+}
+
 
 
 @end

@@ -24,6 +24,7 @@
     self.userId = [[dic valueForKey:@"user"] valueForKey:@"id"];
     self.originalPictureURL = [dic valueForKey:@"original_pic"];
     self.middlePictureURL = [dic valueForKey:@"bmiddle_pic"];
+    self.wbId = [dic valueForKey:@"id"];
 }
 
 - (void)initWithFilePathDictionary:(NSDictionary *)dic
@@ -41,6 +42,8 @@
     self.userId = [dic valueForKey:@"userId"];
     self.originalPictureURL = [dic valueForKey:@"original_pic"];
     self.middlePictureURL = [dic valueForKey:@"bmiddle_pic"];
+    self.wbId = [dic valueForKey:@"id"];
+
     //防止dic中key的值为nil
     [dic enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
             if (obj == nil) {
@@ -73,7 +76,8 @@
                   @"reposts_count":theWbData.repostsCount,
                         @"userId":theWbData.userId,
                   @"original_pic":theWbData.originalPictureURL,
-                   @"bmiddle_pic":theWbData.middlePictureURL
+                   @"bmiddle_pic":theWbData.middlePictureURL,
+                            @"id":theWbData.wbId
     };
     return dic;
 }

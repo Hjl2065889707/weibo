@@ -196,7 +196,6 @@
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             for (int i = 0; i < self.theWBData.pictureNumber.intValue; i++) {
-                NSLog(@" intValue = %d",self.theWBData.pictureNumber.intValue);
                     if (self.theWBData.pictureNumber.intValue > 9) {
                         self.theWBData.pictureNumber = @9;
                     }
