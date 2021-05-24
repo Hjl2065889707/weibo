@@ -61,6 +61,13 @@
     self.navigationItem.leftBarButtonItem = reloadButton;
     self.navigationItem.rightBarButtonItem = postButton;
 
+    //定时刷新
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [NSThread sleepForTimeInterval:500];
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [self.tableView reloadData];
+                });
+    });
 }
 
 - (void)viewWillAppear:(BOOL)animated
