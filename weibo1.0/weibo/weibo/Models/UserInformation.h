@@ -14,6 +14,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property(strong,nonatomic)NSString *browseHistoryFilePath;
 @property(strong,nonatomic)NSString *collectFilePath;
 @property(strong,nonatomic)NSString *postedWBFilePath;
+@property(strong,nonatomic)NSString *searchHistoryFilePath;
+
 
 
 @end

@@ -25,5 +25,6 @@
     _browseHistoryFilePath = [NSString stringWithFormat:@"%@/%@browseHistory.plist",docPath,userId];
     _collectFilePath = [NSString stringWithFormat:@"%@/%@collect.plist",docPath,userId];
     _postedWBFilePath = [NSString stringWithFormat:@"%@/%@postedWB.plist",docPath,userId];
+    _searchHistoryFilePath = [NSString stringWithFormat:@"%@/%@searchHistory.plist",docPath,userId];
 }
 @end

@@ -7,12 +7,13 @@
 
 #import "HomePageTableViewController.h"
 
-@interface HomePageTableViewController ()<UITableViewDelegate,UITableViewDataSource,UISearchBarDelegate,UISearchResultsUpdating,TheWBCellDelegate,LoginViewControllerDelegate,PostWBViewControllerDelegate,UIGestureRecognizerDelegate>
+@interface HomePageTableViewController ()<UITableViewDelegate,UITableViewDataSource,UISearchBarDelegate,UISearchResultsUpdating,TheWBCellDelegate,LoginViewControllerDelegate,PostWBViewControllerDelegate,UIGestureRecognizerDelegate,SearchHistoryTableViewDelegate>
 @property(strong,nonatomic)NSMutableArray *dataArray;
 @property(strong,nonatomic)NSArray *searchResultDataArray;
 @property(strong,nonatomic)NSMutableArray *browseHistoryArray;
 @property (nonatomic,strong)UISearchController *searchController;
 @property (nonatomic,strong)UserInformation *userInformation;
+@property (nonatomic,strong)SearchHistoryTableView *searchHistoryTableView;
 @property(strong,nonatomic)AccessToken *accessToken;
 @property(strong,nonatomic)WBCellFrame *wbCellFrame;
 @end
@@ -44,14 +45,16 @@
     //searchbar
     self.searchController = [[UISearchController alloc] initWithSearchResultsController:nil];//初始化
     self.searchController.searchResultsUpdater = self;//设置代理对象
+    self.searchController.searchBar.delegate = self;
     self.searchController.obscuresBackgroundDuringPresentation = NO;//搜索时背景模糊
     self.searchController.searchBar.frame = CGRectMake(self.searchController.searchBar.frame.origin.x,
                    self.searchController.searchBar.frame.origin.y,
                    self.searchController.searchBar.frame.size.width, 44.0);//设置frame
     self.tableView.tableHeaderView = self.searchController.searchBar;
     
+
     
-    
+    //UIBarButtonItem
     UIBarButtonItem *postButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"post.png"] style:UIBarButtonItemStyleDone target:self action:@selector(postWB)];
     
     UIBarButtonItem *reloadButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"reload.png"] style:UIBarButtonItemStyleDone target:self action:@selector(loadMoreWB)];
@@ -63,7 +66,6 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [self initAndCheckAccessToken];
-//    [self reloadWBData];
 }
 #pragma mark - Table view data source
 
@@ -81,9 +83,6 @@
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-//    if (self.tableView.refreshControl.refreshing) {
-//        return nil;
-//    }
     WBCell *cell = [tableView dequeueReusableCellWithIdentifier:@"id"];//从复用回收池中取cell
     if(!cell){//如果取不到就让cell=新建cell
         cell = [[WBCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"id"];
@@ -98,7 +97,7 @@
     if (self.searchController.active == NO) {
         cell.theWBData = _dataArray[indexPath.row];
     }else{
-            cell.theWBData = _searchResultDataArray[indexPath.row];
+        cell.theWBData = _searchResultDataArray[indexPath.row];
     }
     //设置cell的代理
     cell.delegate = self;
@@ -109,8 +108,7 @@
     //创建cell的子view的
     [cell loadSubviews];
 
-    
-    return cell;
+     return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -118,7 +116,7 @@
     return _wbCellFrame.attitudeTextViewFrame.origin.y+40;//设置cell的高度
 }
 
-
+//通过判断最后一个cell是否将要display来加载更多数据（上拉加载）
  - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSLog(@"row = %lu,count = %lu",indexPath.row,_dataArray.count);
@@ -137,6 +135,12 @@
         NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
             //将获取到的数据转成字典
             NSDictionary *tempDic = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
+            //出错直接返回
+            if ([tempDic valueForKey:@"error"]) {
+                NSLog(@"error!!!");
+                return;
+            }
+        
             //获取dic中要用到的信息
             NSMutableArray *statuesArray =[NSMutableArray arrayWithArray:[tempDic valueForKey:@"statuses"] ];
             [statuesArray removeObject:statuesArray.firstObject];
@@ -162,6 +166,7 @@
 #pragma mark - 点击事件
 - (void)tableViewClick:(UIGestureRecognizer *)gestureRecognizer {
     NSLog(@"click!");
+
     CGPoint point = [gestureRecognizer locationInView:self.tableView];
     NSIndexPath *indexpath = [self.tableView indexPathForRowAtPoint:point];
     //获取当前用户信息，用于获取文件目录
@@ -194,6 +199,9 @@
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
 {
+    if (self.searchController.active) {
+        return NO;
+    }
     return YES;
 }
 
@@ -211,8 +219,6 @@
 
 - (void)reloadWBData
 {
-    
-    
     //请求数据
     NSURLSession *session = [NSURLSession sharedSession];//创建会话对象
     NSString *urlString = [NSString stringWithFormat:@"https://api.weibo.com/2/statuses/home_timeline.json?access_token=%@&count=30",self.accessToken.access_token];
@@ -280,6 +286,9 @@
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [request setHTTPMethod:@"POST"];//设置请求的方法为POST方法
     NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        if (data == nil) {
+            return;
+        }
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
         //如果过期则跳转到登陆界面
         if ([dic valueForKey:@"expire_in"] < 0 || [dic valueForKey:@"error"] != nil) {
@@ -329,23 +338,51 @@
 }
 
 #pragma mark - UISearchBarDelegate
-
 - (void)updateSearchResultsForSearchController:(UISearchController *)searchController
 {
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"%K CONTAINS %@ || %K CONTAINS %@", @"name",_searchController.searchBar.text, @"text",_searchController.searchBar.text];
     
-    _searchResultDataArray = [_dataArray filteredArrayUsingPredicate:predicate];
-    [_searchResultDataArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            TheWbData *theData = obj;
-            NSLog(@"%@",theData.text);
-    }];
-    NSLog(@"%@",_searchResultDataArray);
-    if (_searchController.searchBar.text) {
-        [self.tableView reloadData];
-    }
 }
 
 
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
+{
+    NSLog(@"search");
+    
+    [_searchHistoryTableView addWithHistoryString:self.searchController.searchBar.text];
+    _searchHistoryTableView.hidden = YES;
+
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"%K CONTAINS %@ || %K CONTAINS %@", @"name",_searchController.searchBar.text, @"text",_searchController.searchBar.text];
+    _searchResultDataArray = [_dataArray filteredArrayUsingPredicate:predicate];
+    self.tableView.scrollEnabled = YES;
+    [self.tableView reloadData];
+}
+
+- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar
+{
+    self.tableView.scrollEnabled = NO;
+    BOOL didShowSearchHistoryView = NO;
+    for (UIView *view in self.view.subviews) {
+        if ([view isKindOfClass:[SearchHistoryTableView class]]) {
+            didShowSearchHistoryView = YES;
+        }
+    }
+    if (didShowSearchHistoryView == NO) {
+        _searchHistoryTableView = [[SearchHistoryTableView alloc] initWithFrame:CGRectMake(0, 54, self.view.bounds.size.width, self.view.bounds.size.height)];
+        _searchHistoryTableView.searchHistoryTableViewDelegate = self;
+        [_searchHistoryTableView loadSearchHistory];
+        [self.view addSubview:_searchHistoryTableView];
+    }
+    _searchHistoryTableView.hidden = NO;
+
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
+{
+    _searchHistoryTableView.hidden = YES;
+    self.searchController.active = NO;
+    self.tableView.scrollEnabled = YES;
+    [self.tableView reloadData];
+}
 
 - (void)poenLinkText:(NSURL *)url
 {
@@ -393,6 +430,10 @@
         [dataTask resume];
 }
 
+#pragma mark - SearchHistoryTableViewDelegate
+-(void)replaceSearchBarTextWithString:(NSString *)str
+{
+    self.searchController.searchBar.text = str;
 
-
+}
 @end

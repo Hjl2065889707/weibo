@@ -18,20 +18,11 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    WKWebView *webview = [[WKWebView alloc] initWithFrame:self.view.bounds];
+    WKWebView *webview = [[WKWebView alloc] init];
+    webview.frame = CGRectMake(0, 88, self.view.bounds.size.width, self.view.bounds.size.height);
     [self.view addSubview:webview];
     [webview loadRequest:[NSURLRequest requestWithURL:_url]];
 }
 
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

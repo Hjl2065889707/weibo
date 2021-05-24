@@ -162,18 +162,24 @@
                     [self.contentView addSubview:self.pictureImageView];
                         });
         }else if (self.theWBData.pictureNumber.intValue > 1){
+            //加载多图
+            //存放image的数组
             NSMutableArray *imageArray = [NSMutableArray array];
+            //最多加载九张图片
             if (self.theWBData.pictureNumber.intValue > 9) {
                 self.theWBData.pictureNumber = @9;
             }
-                for (int i = 0; i < self.theWBData.pictureNumber.intValue; i++) {
+            //加载image并存入数组
+            for (int i = 0; i < self.theWBData.pictureNumber.intValue; i++) {
                 NSData *pictureImageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:[[self.theWBData.pictureURLs objectAtIndex:i] valueForKey:@"thumbnail_pic"] ] ];
                 UIImage *image = [[UIImage alloc] initWithData:pictureImageData];
-                    if (image == nil) {
-                        image = [UIImage imageNamed:@"loadFail"];
-                    }
-                    [imageArray addObject:image];
+                //image加载失败的时候显示加载失败的图标
+                if (image == nil) {
+                    image = [UIImage imageNamed:@"loadFail"];
                 }
+                [imageArray addObject:image];
+            }
+            //加载完image切回主线程更新UI
             dispatch_sync(dispatch_get_main_queue(), ^{
                 if (self.wbCellFrame.picturesFrameArray.count > 1) {
                     for (int j = 0; j < self.theWBData.pictureNumber.intValue; j++) {
@@ -194,11 +200,6 @@
 
 
 #pragma mark -ButtonMethod
-
-- (void)nameClick
-{
-    [WeiboSDK linkToUser:[NSString stringWithFormat:@"%@",self.theWBData.userId]];
-}
 
 - (void)collectButtonClick:(UIButton *)button
 {
@@ -224,6 +225,7 @@
         [self.collectArray addObject:[TheWbData initDicitonaryWithTheWbData:wbData]];
         //写入数据
     }else{
+        //因为进入这个方法的时候就已经把这条微博删除了，所以这里啥都不用做
         NSLog(@"取消收藏成功");
         }
     //写入数据

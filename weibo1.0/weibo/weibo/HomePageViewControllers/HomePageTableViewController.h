@@ -13,6 +13,7 @@
 #import "UserInformation.h"
 #import "WebViewController.h"
 #import "PostWBViewController.h"
+#import "SearchHistoryTableView.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface HomePageTableViewController : UITableViewController

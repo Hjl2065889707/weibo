@@ -35,13 +35,13 @@
     [browseHistoryButton addTarget:self action:@selector(browseHistoryButtonPressed) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:browseHistoryButton];
     
-    
+    //登出按钮
     UIButton *outButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [outButton setTitle:NSLocalizedString(@"out", nil) forState:UIControlStateNormal];
     [outButton addTarget:self action:@selector(outButtonPressed) forControlEvents:UIControlEventTouchUpInside];
     outButton.frame = CGRectMake(20, 190, 280, 40);
     [self.view addSubview:outButton];
-    
+    //测试用按钮
     UIButton *aButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [aButton setTitle:NSLocalizedString(@"111", nil) forState:UIControlStateNormal];
     [aButton addTarget:self action:@selector(aButtonPressed) forControlEvents:UIControlEventTouchUpInside];
