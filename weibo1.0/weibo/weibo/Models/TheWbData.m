@@ -43,6 +43,7 @@
     self.originalPictureURL = [dic valueForKey:@"original_pic"];
     self.middlePictureURL = [dic valueForKey:@"bmiddle_pic"];
     self.wbId = [dic valueForKey:@"id"];
+    self.pictureData = [dic valueForKey:@"pictureData"];
 
     //防止dic中key的值为nil
     [dic enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {

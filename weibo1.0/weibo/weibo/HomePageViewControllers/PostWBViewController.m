@@ -169,7 +169,7 @@
         NSLog(@"URL = %@",URLString);
         _theWBData.pictureNumber = @1;
         _theWBData.pictureData = [NSData dataWithContentsOfURL:imageURL];
-        _imageView.image = [info objectForKey:UIImagePickerControllerOriginalImage];
+        _imageView.image = [UIImage imageWithData:_theWBData.pictureData];
         [self dismissViewControllerAnimated:YES completion:nil];
     }
 }
