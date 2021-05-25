@@ -6,8 +6,6 @@
 //
 
 #import "WBCell.h"
-#import "WeiboSDK.h"
-#import "WBHttpRequest.h"
 #import <WebKit/WebKit.h>
 #import "WebViewController.h"
 #import "CollectButton.h"
@@ -152,6 +150,9 @@
         //图片内容
         if (self.theWBData.pictureNumber.intValue == 1) {
                 NSData *pictureImageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:self.theWBData.middlePictureURL] ];
+            if (self.theWBData.userId.intValue == 123456) {
+                pictureImageData = self.theWBData.pictureData;
+            }
                 UIImage *mainImage = [[UIImage alloc] initWithData:pictureImageData];
                 //回到主线程对view进行操作
                 dispatch_sync(dispatch_get_main_queue(), ^{

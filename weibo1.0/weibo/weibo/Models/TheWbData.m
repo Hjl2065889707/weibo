@@ -63,7 +63,9 @@
     if (theWbData.location == nil) {
         theWbData.location = [NSString stringWithFormat:@"nil"];
     }
-    
+    if (theWbData.pictureData == nil) {
+        theWbData.pictureData = [[NSData alloc] init];
+    }
     NSDictionary *dic = @{@"name":theWbData.name,
                     @"created_at":theWbData.creatTime,
                       @"location":theWbData.location,
@@ -77,7 +79,8 @@
                         @"userId":theWbData.userId,
                   @"original_pic":theWbData.originalPictureURL,
                    @"bmiddle_pic":theWbData.middlePictureURL,
-                            @"id":theWbData.wbId
+                            @"id":theWbData.wbId,
+                   @"pictureData":theWbData.pictureData
     };
     return dic;
 }

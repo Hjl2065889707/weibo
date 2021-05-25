@@ -35,12 +35,6 @@
     refreshControl.attributedTitle = [[NSAttributedString alloc]initWithString:@"下拉刷新"];
     [refreshControl addTarget:self action:@selector(reloadWBData) forControlEvents:UIControlEventValueChanged];
     self.tableView.refreshControl = refreshControl;
-
-    //上拉加载
-    UIRefreshControl *loadMoreRefreshControl = [[UIRefreshControl alloc] init];
-    loadMoreRefreshControl.attributedTitle = [[NSAttributedString alloc]initWithString:@"上拉加载"];
-    [loadMoreRefreshControl addTarget:self action:@selector(loadMoreWB) forControlEvents:UIControlEventValueChanged];
- //   self.tableView.tableFooterView = loadMoreRefreshControl;
     
     //searchbar
     self.searchController = [[UISearchController alloc] initWithSearchResultsController:nil];//初始化
@@ -57,7 +51,7 @@
     //UIBarButtonItem
     UIBarButtonItem *postButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"post.png"] style:UIBarButtonItemStyleDone target:self action:@selector(postWB)];
     
-    UIBarButtonItem *reloadButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"reload.png"] style:UIBarButtonItemStyleDone target:self action:@selector(loadMoreWB)];
+    UIBarButtonItem *reloadButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"reload.png"] style:UIBarButtonItemStyleDone target:self action:@selector(reloadWBData)];
     self.navigationItem.leftBarButtonItem = reloadButton;
     self.navigationItem.rightBarButtonItem = postButton;
 
@@ -74,7 +68,7 @@
 {
     [self initAndCheckAccessToken];
 }
-#pragma mark - Table view data source
+#pragma mark - TableDelegates
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
@@ -170,7 +164,7 @@
     
 }
 
-#pragma mark - 点击事件
+#pragma mark - cell点击事件
 - (void)tableViewClick:(UIGestureRecognizer *)gestureRecognizer {
     NSLog(@"click!");
 
@@ -218,11 +212,9 @@
     PostWBViewController *postWBViewController = [[PostWBViewController alloc] init];
     postWBViewController.delegate = self;
     [self.navigationController pushViewController:postWBViewController animated:YES];
- //   [WeiboSDK shareToWeibo:@""];
 }
 
 #pragma mark - DataMethod
-
 
 - (void)reloadWBData
 {
@@ -236,6 +228,7 @@
         self.dataArray = [NSMutableArray array];
         //加载自己发的微博
         UserInformation *userInformation = [[UserInformation alloc] init];
+        NSLog(@"%@",userInformation.postedWBFilePath);
         NSMutableArray *array = [NSMutableArray arrayWithContentsOfFile:userInformation.postedWBFilePath];
         
         for(NSDictionary *dic1 in array.reverseObjectEnumerator)//逆向枚举
@@ -398,44 +391,12 @@
     [self.navigationController pushViewController:webViewController animated:YES];
 }
 
-
+#pragma mark - postWBViewControllerDelegate&LoginViewControllerDelegate
 - (void)reloadTabelViewData {
     [self reloadWBData];
 }
 
-- (void)loadMoreWB
-{
-        TheWbData *tempData = _dataArray.lastObject;
-        NSLog(@"WBid = %lu",tempData.wbId.longValue);
-        //请求数据
-        NSURLSession *session = [NSURLSession sharedSession];//创建会话对象
-        NSString *urlString = [NSString stringWithFormat:@"https://api.weibo.com/2/statuses/home_timeline.json?access_token=%@&max_id=%lu&count=20",self.accessToken.access_token,tempData.wbId.longValue];
-        NSURL *url = [NSURL URLWithString:urlString];
-        
-        NSLog(@"%@",url.query);
-        
-        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-        NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-            //将获取到的数据转成字典
-            NSDictionary *tempDic = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
-            //获取dic中要用到的信息
-            NSMutableArray *statuesArray =[NSMutableArray arrayWithArray:[tempDic valueForKey:@"statuses"] ];
-            [statuesArray removeObject:statuesArray.firstObject];
-            //将传回的数据转换为theWBData对象并存入数组
-            for(NSDictionary *dic in statuesArray)
-            {
-                TheWbData *theWBData = [[TheWbData alloc] init];
-                [theWBData initWithWebDictionary:dic];
-                [self.dataArray addObject:theWBData];
-            }//同步回到主线程
-            dispatch_sync(dispatch_get_main_queue(), ^{
-                [self.tableView reloadData];
-            });
-            
-        }];
-        //执行任务
-        [dataTask resume];
-}
+
 
 #pragma mark - SearchHistoryTableViewDelegate
 -(void)replaceSearchBarTextWithString:(NSString *)str

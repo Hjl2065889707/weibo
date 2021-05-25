@@ -24,6 +24,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property(strong,nonatomic)NSNumber *userId;
 @property(strong,nonatomic)NSNumber *wbId;
 @property(strong,nonatomic)NSArray *pictureURLs;
+@property(strong,nonatomic)NSData *pictureData;
+
 
 - (void)initWithWebDictionary:(NSDictionary *)dic;
 - (void)initWithFilePathDictionary:(NSDictionary *)dic;

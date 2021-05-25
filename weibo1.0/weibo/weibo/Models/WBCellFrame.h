@@ -7,6 +7,7 @@
 
 #import <Foundation/Foundation.h>
 #import "TheWbData.h"
+#import "UserInformation.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface WBCellFrame : NSObject

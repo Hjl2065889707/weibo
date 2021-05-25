@@ -6,7 +6,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "WeiboSDK.h"
 #import <WebKit/WebKit.h>
 #import "AccessToken.h"
 NS_ASSUME_NONNULL_BEGIN
@@ -19,7 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 
-@interface LoginViewController : UIViewController<WeiboSDKDelegate,WKUIDelegate,WKNavigationDelegate>
+@interface LoginViewController : UIViewController<WKUIDelegate,WKNavigationDelegate>
 
 @property(weak,nonatomic)id<LoginViewControllerDelegate> delegate;
 

@@ -10,7 +10,7 @@
 #import "TheWbData.h"
 #import <PhotosUI/PhotosUI.h>
 
-@interface PostWBViewController ()<PHPickerViewControllerDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,UITextViewDelegate>
+@interface PostWBViewController ()<UIImagePickerControllerDelegate,UINavigationControllerDelegate,UITextViewDelegate>
 @property(strong,nonatomic)UITextView *textView;
 @property(strong,nonatomic)UILabel *placeHolder;
 @property(strong,nonatomic)TheWbData *theWBData;
@@ -26,6 +26,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
+    
+    _theWBData = [[TheWbData alloc] init];
     //postButton
     UIBarButtonItem *postButton = [[UIBarButtonItem alloc] initWithTitle:@"发送" style:UIBarButtonItemStyleDone target:self action:@selector(postWB)];
     postButton.enabled = NO;
@@ -39,7 +41,7 @@
     [self.view addSubview:_placeHolder];
     
     //textView
-    _textView = [[UITextView alloc] initWithFrame:CGRectMake(0, 100, self.view.bounds.size.width, 300)];
+    _textView = [[UITextView alloc] initWithFrame:CGRectMake(0, 100, self.view.bounds.size.width, 250)];
     _textView.font = [UIFont systemFontOfSize:22];
     _textView.backgroundColor = [UIColor clearColor];
     _textView.delegate = self;
@@ -47,14 +49,13 @@
     //自动弹出键盘
     [_textView becomeFirstResponder];
     //选择图片
-    UIButton *selectPictureButton = [UIButton systemButtonWithImage:[UIImage imageNamed:@"home.png"] target:self action:@selector(selectPictureButtonPressed)];
-    selectPictureButton.frame = CGRectMake(100, 450, 50, 50);
+    UIButton *selectPictureButton = [UIButton systemButtonWithImage:[UIImage imageNamed:@"picture.png"] target:self action:@selector(selectPictureButtonPressed)];
+    selectPictureButton.frame = CGRectMake(10, 500, 50, 50);
     [self.view addSubview:selectPictureButton];
     
-    //测试
+    //图片预览
         _imageView = [[UIImageView alloc] init];
-        _imageView.frame = CGRectMake(10, 500, 50, 50);
-    _imageView.backgroundColor = [UIColor redColor];
+        _imageView.frame = CGRectMake(10, 350, 150, 150);
         [self.view addSubview: _imageView];
     
 }
@@ -85,20 +86,26 @@
     //变为str
     NSString* dateStr = [formatter1 stringFromDate:date];
     
-    _theWBData = [[TheWbData alloc] init];
     _theWBData.name =  [NSString stringWithFormat:@"%@",userInformation.userId];
     _theWBData.profileImageURL = @"https://www.baidu.com/img/flexible/logo/pc/result@2.png";
     _theWBData.creatTime = dateStr;
     _theWBData.location = @"广州";
     _theWBData.text = _textView.text;
-    _theWBData.pictureNumber = @0;
+    if (_theWBData.pictureNumber.intValue != 1 ) {
+        _theWBData.pictureNumber = @0;
+    }
+    
     _theWBData.pictureURLs = [NSArray array];
     _theWBData.attitudesCount = @666;
     _theWBData.commentsCount = @666;
     _theWBData.repostsCount = @666;
     _theWBData.userId = @123456 ;
-    _theWBData.originalPictureURL = @"nil";
-    _theWBData.middlePictureURL = @"nil";
+    if (_theWBData.originalPictureURL == nil) {
+        _theWBData.originalPictureURL = @"nil";
+    }
+    if (_theWBData.middlePictureURL == nil) {
+        _theWBData.middlePictureURL = @"nil";
+    }
     _theWBData.wbId = @0;
     
     [_postedWBArray addObject:[TheWbData initDicitonaryWithTheWbData:_theWBData] ];
@@ -144,34 +151,29 @@
 - (void)selectPictureButtonPressed
 {
     //选择图片的按钮
-    PHPickerConfiguration *config = [[PHPickerConfiguration alloc] init];
-    config.selectionLimit = 1;
-    config.filter = [PHPickerFilter imagesFilter];
-    
-    PHPickerViewController *pickerViewController = [[PHPickerViewController alloc] initWithConfiguration:config];
-    pickerViewController.delegate = self;
-    [self presentViewController:pickerViewController animated:YES completion:^{}];
+    UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
+    imagePicker.delegate = self;
+    imagePicker.allowsEditing = NO;
+    imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+    [self presentViewController:imagePicker animated:YES completion:nil];
     
 }
 
-#pragma mark - PHPickerViewControllerDelegate
-
-- (void)picker:(PHPickerViewController *)picker didFinishPicking:(NSArray<PHPickerResult *> *)results
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey,id> *)info
 {
-    
-    [picker dismissViewControllerAnimated:YES completion:^{}];
-    for (PHPickerResult *result in results) {
-       [ result.itemProvider loadObjectOfClass:[UIImage class] completionHandler:^(__kindof id<NSItemProviderReading>  _Nullable object, NSError * _Nullable error) {
-           
-           NSLog(@"image: %@",object);
-
-            if ([object isKindOfClass:[UIImage class]]) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    self.imageView = [[UIImageView alloc] initWithImage:object];
-                });
-            }
-       }];
+    if ([ [info objectForKey:UIImagePickerControllerMediaType] isEqualToString:@"public.image"]) {
+        NSURL *imageURL = [info objectForKey:UIImagePickerControllerImageURL];
+        NSString *URLString = [NSString stringWithFormat:@"%@",imageURL];
+        _theWBData.originalPictureURL = URLString;
+        _theWBData.middlePictureURL = URLString;
+        NSLog(@"URL = %@",URLString);
+        _theWBData.pictureNumber = @1;
+        _theWBData.pictureData = [NSData dataWithContentsOfURL:imageURL];
+        _imageView.image = [info objectForKey:UIImagePickerControllerOriginalImage];
+        [self dismissViewControllerAnimated:YES completion:nil];
     }
 }
+
+
 
 @end

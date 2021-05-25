@@ -27,7 +27,6 @@
 
 
 - (void)loadSubviews;
-- (void)loadImageView;
 
 @end
 
