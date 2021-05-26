@@ -16,13 +16,18 @@
 @property (nonatomic,strong)SearchHistoryTableView *searchHistoryTableView;
 @property(strong,nonatomic)AccessToken *accessToken;
 @property(strong,nonatomic)WBCellFrame *wbCellFrame;
+@property(strong,nonatomic)UIScrollView *categoryScrollView;
+@property(strong,nonatomic)UISlider *slider;
+@property(assign,nonatomic)BOOL useSearchArrayAsDataSource;
 @end
 
 @implementation HomePageTableViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    //初始化useSearchArrayAsDataSource
+    _useSearchArrayAsDataSource = NO;
+    //设置delegate
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     //cell的点击事件
@@ -41,6 +46,7 @@
     self.searchController.searchResultsUpdater = self;//设置代理对象
     self.searchController.searchBar.delegate = self;
     self.searchController.obscuresBackgroundDuringPresentation = NO;//搜索时背景模糊
+    self.searchController.hidesNavigationBarDuringPresentation = NO;
     self.searchController.searchBar.frame = CGRectMake(self.searchController.searchBar.frame.origin.x,
                    self.searchController.searchBar.frame.origin.y,
                    self.searchController.searchBar.frame.size.width, 44.0);//设置frame
@@ -50,11 +56,14 @@
     
     //UIBarButtonItem
     UIBarButtonItem *postButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"post.png"] style:UIBarButtonItemStyleDone target:self action:@selector(postWB)];
-    
     UIBarButtonItem *reloadButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"reload.png"] style:UIBarButtonItemStyleDone target:self action:@selector(reloadWBData)];
+    
     self.navigationItem.leftBarButtonItem = reloadButton;
     self.navigationItem.rightBarButtonItem = postButton;
 
+    //loadCategoryScrollView
+    [self loadCategoryScrollView];
+    
     //定时刷新
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [NSThread sleepForTimeInterval:500];
@@ -68,6 +77,104 @@
 {
     [self initAndCheckAccessToken];
 }
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    self.tableView.frame = CGRectMake(0, 100, self.view.bounds.size.width, self.view.bounds.size.height-100);
+}
+
+#pragma mark - loadCategoryScrollView
+- (void)loadCategoryScrollView
+{
+    _slider = [[UISlider alloc] init];
+    _slider.frame = CGRectMake(0, 130, self.tabBarController.view.bounds.size.width, 10);
+    _slider.minimumTrackTintColor = [UIColor darkGrayColor];
+    [_slider setThumbImage:[UIImage imageNamed:@"dot"] forState:UIControlStateNormal];
+    [_slider addTarget:self action:@selector(SliderChange:) forControlEvents:UIControlEventValueChanged];
+    [self.tabBarController.view addSubview:_slider];
+
+    _categoryScrollView = [[UIScrollView alloc] init];
+    _categoryScrollView.frame = CGRectMake(0, 90, self.tabBarController.view.bounds.size.width, 35);
+    _categoryScrollView.contentSize = CGSizeMake(600, 35);
+    _categoryScrollView.backgroundColor = [UIColor redColor];
+    [self.tabBarController.view addSubview:_categoryScrollView];
+    
+    UIButton *allButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [allButton setTitle:@"全部" forState:UIControlStateNormal];
+    allButton.titleLabel.font = [UIFont systemFontOfSize:22];
+    [allButton addTarget:self action:@selector(allButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+    allButton.frame = CGRectMake(5, 0, 70, 35);
+    allButton.backgroundColor = [UIColor greenColor];
+    [_categoryScrollView addSubview:allButton];
+    
+    UIButton *plmmButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [plmmButton setTitle:@"美女" forState:UIControlStateNormal];
+    plmmButton.titleLabel.font = [UIFont systemFontOfSize:22];
+    [plmmButton addTarget:self action:@selector(categoryButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+    plmmButton.frame = CGRectMake(130, 0, 70, 35);
+    plmmButton.backgroundColor = [UIColor greenColor];
+    [_categoryScrollView addSubview:plmmButton];
+    
+    UIButton *sameCityButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [sameCityButton setTitle:@"同城" forState:UIControlStateNormal];
+    sameCityButton.titleLabel.font = [UIFont systemFontOfSize:22];
+    [sameCityButton addTarget:self action:@selector(categoryButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+    sameCityButton.frame = CGRectMake(230, 0, 70, 35);
+    sameCityButton.backgroundColor = [UIColor greenColor];
+    [_categoryScrollView addSubview:sameCityButton];
+    
+    UIButton *digitButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [digitButton setTitle:@"数码" forState:UIControlStateNormal];
+    digitButton.titleLabel.font = [UIFont systemFontOfSize:22];
+    [digitButton addTarget:self action:@selector(categoryButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+    digitButton.frame = CGRectMake(330, 0, 70, 35);
+    digitButton.backgroundColor = [UIColor greenColor];
+    [_categoryScrollView addSubview:digitButton];
+    
+    UIButton *sportButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [sportButton setTitle:@"体育" forState:UIControlStateNormal];
+    sportButton.titleLabel.font = [UIFont systemFontOfSize:22];
+    [sportButton addTarget:self action:@selector(categoryButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+    sportButton.frame = CGRectMake(430, 0, 70, 35);
+    sportButton.backgroundColor = [UIColor greenColor];
+    [_categoryScrollView addSubview:sportButton];
+    
+   
+    
+}
+#pragma mark -sliderMethod
+- (void)SliderChange:(UISlider *)slider
+{
+    _categoryScrollView.contentOffset = CGPointMake((_categoryScrollView.contentSize.width-_categoryScrollView.frame.size.width)*slider.value, 0);
+}
+#pragma mark -ScrollViewButtonMethod
+- (void)allButtonClick:(UIButton *)button
+{
+    _useSearchArrayAsDataSource = NO;
+    [self.tableView reloadData];
+
+}
+
+- (void)categoryButtonClick:(UIButton *)button
+{
+    NSLog(@"%@",button.titleLabel.text);
+    _useSearchArrayAsDataSource = YES;
+    NSPredicate *predicate = [[NSPredicate alloc] init];
+    if ([button.titleLabel.text isEqualToString:@"美女"]) {
+        predicate = [NSPredicate predicateWithFormat:@"%K CONTAINS %@ || %K CONTAINS %@", @"name",@"梨涡允允", @"text",@"美女"];
+    }else if ([button.titleLabel.text isEqualToString:@"同城"]){
+        predicate = [NSPredicate predicateWithFormat:@"%K CONTAINS %@", @"location",@"广州"];
+    }else if ([button.titleLabel.text isEqualToString:@"数码"]){
+        predicate = [NSPredicate predicateWithFormat:@"%K CONTAINS %@ || %K CONTAINS %@", @"name",@"美女", @"text",@"美女"];
+    }else if ([button.titleLabel.text isEqualToString:@"体育"]){
+        predicate = [NSPredicate predicateWithFormat:@"%K CONTAINS %@ || %K CONTAINS %@", @"name",@"美女", @"text",@"美女"];
+    }
+    
+    _searchResultDataArray = [_dataArray filteredArrayUsingPredicate:predicate];
+    self.tableView.scrollEnabled = YES;
+    [self.tableView reloadData];
+}
+
 #pragma mark - TableDelegates
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -75,7 +182,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (self.searchController.active) {
+    if (_useSearchArrayAsDataSource == YES) {
         return _searchResultDataArray.count;
     }
     return self.dataArray.count;
@@ -95,7 +202,7 @@
     //设置cell被选中时不变灰
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     //根据搜索栏是否激活设置theWBData
-    if (self.searchController.active == NO) {
+    if (_useSearchArrayAsDataSource == NO) {
         cell.theWBData = _dataArray[indexPath.row];
     }else{
         cell.theWBData = _searchResultDataArray[indexPath.row];
@@ -359,6 +466,7 @@
 
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar
 {
+    _useSearchArrayAsDataSource = YES;
     self.tableView.scrollEnabled = NO;
     BOOL didShowSearchHistoryView = NO;
     for (UIView *view in self.view.subviews) {
@@ -381,6 +489,7 @@
     _searchHistoryTableView.hidden = YES;
     self.searchController.active = NO;
     self.tableView.scrollEnabled = YES;
+    _useSearchArrayAsDataSource = NO;
     [self.tableView reloadData];
 }
 
