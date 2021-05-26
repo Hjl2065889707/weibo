@@ -80,64 +80,79 @@
 
 - (void)viewDidAppear:(BOOL)animated
 {
-    self.tableView.frame = CGRectMake(0, 100, self.view.bounds.size.width, self.view.bounds.size.height-100);
+    self.tableView.frame = CGRectMake(0, 90, self.view.bounds.size.width, self.view.bounds.size.height-100);
 }
 
 #pragma mark - loadCategoryScrollView
 - (void)loadCategoryScrollView
 {
     _slider = [[UISlider alloc] init];
-    _slider.frame = CGRectMake(0, 130, self.tabBarController.view.bounds.size.width, 10);
+    _slider.frame = CGRectMake(0, 125, self.tabBarController.view.bounds.size.width, 10);
     _slider.minimumTrackTintColor = [UIColor darkGrayColor];
+    _slider.backgroundColor = [UIColor whiteColor];
     [_slider setThumbImage:[UIImage imageNamed:@"dot"] forState:UIControlStateNormal];
     [_slider addTarget:self action:@selector(SliderChange:) forControlEvents:UIControlEventValueChanged];
     [self.tabBarController.view addSubview:_slider];
 
     _categoryScrollView = [[UIScrollView alloc] init];
     _categoryScrollView.frame = CGRectMake(0, 90, self.tabBarController.view.bounds.size.width, 35);
-    _categoryScrollView.contentSize = CGSizeMake(600, 35);
-    _categoryScrollView.backgroundColor = [UIColor redColor];
+    _categoryScrollView.contentSize = CGSizeMake(630, 35);
+    _categoryScrollView.backgroundColor = [UIColor whiteColor];
     [self.tabBarController.view addSubview:_categoryScrollView];
     
     UIButton *allButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [allButton setTitle:@"全部" forState:UIControlStateNormal];
     allButton.titleLabel.font = [UIFont systemFontOfSize:22];
+    [allButton setTitleColor:[UIColor darkTextColor] forState:UIControlStateNormal];
     [allButton addTarget:self action:@selector(allButtonClick:) forControlEvents:UIControlEventTouchUpInside];
-    allButton.frame = CGRectMake(5, 0, 70, 35);
-    allButton.backgroundColor = [UIColor greenColor];
+    allButton.frame = CGRectMake(30, 0, 70, 35);
+//    allButton.backgroundColor = [UIColor greenColor];
     [_categoryScrollView addSubview:allButton];
     
     UIButton *plmmButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [plmmButton setTitle:@"美女" forState:UIControlStateNormal];
     plmmButton.titleLabel.font = [UIFont systemFontOfSize:22];
+    [plmmButton setTitleColor:[UIColor darkTextColor] forState:UIControlStateNormal];
     [plmmButton addTarget:self action:@selector(categoryButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     plmmButton.frame = CGRectMake(130, 0, 70, 35);
-    plmmButton.backgroundColor = [UIColor greenColor];
+//    plmmButton.backgroundColor = [UIColor greenColor];
     [_categoryScrollView addSubview:plmmButton];
     
     UIButton *sameCityButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [sameCityButton setTitle:@"同城" forState:UIControlStateNormal];
     sameCityButton.titleLabel.font = [UIFont systemFontOfSize:22];
+    [sameCityButton setTitleColor:[UIColor darkTextColor] forState:UIControlStateNormal];
     [sameCityButton addTarget:self action:@selector(categoryButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     sameCityButton.frame = CGRectMake(230, 0, 70, 35);
-    sameCityButton.backgroundColor = [UIColor greenColor];
+//    sameCityButton.backgroundColor = [UIColor greenColor];
     [_categoryScrollView addSubview:sameCityButton];
     
     UIButton *digitButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [digitButton setTitle:@"数码" forState:UIControlStateNormal];
     digitButton.titleLabel.font = [UIFont systemFontOfSize:22];
+    [digitButton setTitleColor:[UIColor darkTextColor] forState:UIControlStateNormal];
     [digitButton addTarget:self action:@selector(categoryButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     digitButton.frame = CGRectMake(330, 0, 70, 35);
-    digitButton.backgroundColor = [UIColor greenColor];
+//    digitButton.backgroundColor = [UIColor greenColor];
     [_categoryScrollView addSubview:digitButton];
     
     UIButton *sportButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [sportButton setTitle:@"体育" forState:UIControlStateNormal];
     sportButton.titleLabel.font = [UIFont systemFontOfSize:22];
+    [sportButton setTitleColor:[UIColor darkTextColor] forState:UIControlStateNormal];
     [sportButton addTarget:self action:@selector(categoryButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     sportButton.frame = CGRectMake(430, 0, 70, 35);
-    sportButton.backgroundColor = [UIColor greenColor];
+//    sportButton.backgroundColor = [UIColor greenColor];
     [_categoryScrollView addSubview:sportButton];
+    
+    UIButton *petButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [petButton setTitle:@"萌宠" forState:UIControlStateNormal];
+    petButton.titleLabel.font = [UIFont systemFontOfSize:22];
+    [petButton setTitleColor:[UIColor darkTextColor] forState:UIControlStateNormal];
+    [petButton addTarget:self action:@selector(categoryButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+    petButton.frame = CGRectMake(530, 0, 70, 35);
+//    sportButton.backgroundColor = [UIColor greenColor];
+    [_categoryScrollView addSubview:petButton];
     
    
     
@@ -159,15 +174,18 @@
 {
     NSLog(@"%@",button.titleLabel.text);
     _useSearchArrayAsDataSource = YES;
+    CategoryPredicate *categoryPredicate = [[CategoryPredicate alloc] init];
     NSPredicate *predicate = [[NSPredicate alloc] init];
     if ([button.titleLabel.text isEqualToString:@"美女"]) {
-        predicate = [NSPredicate predicateWithFormat:@"%K CONTAINS %@ || %K CONTAINS %@", @"name",@"梨涡允允", @"text",@"美女"];
+        predicate = categoryPredicate.plmmPredicate;
     }else if ([button.titleLabel.text isEqualToString:@"同城"]){
-        predicate = [NSPredicate predicateWithFormat:@"%K CONTAINS %@", @"location",@"广州"];
+        predicate = categoryPredicate.sameCityPredicate;
     }else if ([button.titleLabel.text isEqualToString:@"数码"]){
-        predicate = [NSPredicate predicateWithFormat:@"%K CONTAINS %@ || %K CONTAINS %@", @"name",@"美女", @"text",@"美女"];
+        predicate = categoryPredicate.digitPredicate;
     }else if ([button.titleLabel.text isEqualToString:@"体育"]){
-        predicate = [NSPredicate predicateWithFormat:@"%K CONTAINS %@ || %K CONTAINS %@", @"name",@"美女", @"text",@"美女"];
+        predicate = categoryPredicate.sportPredicate;
+    }else if ([button.titleLabel.text isEqualToString:@"萌宠"]){
+        predicate = categoryPredicate.petPredicate;
     }
     
     _searchResultDataArray = [_dataArray filteredArrayUsingPredicate:predicate];
@@ -404,6 +422,8 @@
             dispatch_sync(dispatch_get_main_queue(), ^{
                 LoginViewController *loginViewController = [[LoginViewController alloc] init];
                 loginViewController.delegate = self;
+                self.categoryScrollView.hidden = YES;
+                self.slider.hidden = YES;
                 [self.navigationController pushViewController:loginViewController animated:YES];
             });
         }else{
@@ -501,8 +521,10 @@
 }
 
 #pragma mark - postWBViewControllerDelegate&LoginViewControllerDelegate
-- (void)reloadTabelViewData {
+- (void)LoginViewControllerPop{
     [self reloadWBData];
+    _slider.hidden = NO;
+    _categoryScrollView.hidden = NO;
 }
 
 

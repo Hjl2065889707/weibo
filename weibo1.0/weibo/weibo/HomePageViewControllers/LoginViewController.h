@@ -13,7 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol LoginViewControllerDelegate <NSObject>
 
-- (void)reloadTabelViewData;
+- (void)LoginViewControllerPop;
 
 @end
 

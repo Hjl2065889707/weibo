@@ -39,6 +39,7 @@
 		E1DA8C8D263E91DB00C78485 /* HomePageTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1DA8C8C263E91DB00C78485 /* HomePageTableViewController.m */; };
 		E1DA8C9A263EBA2900C78485 /* FindPageTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1DA8C99263EBA2900C78485 /* FindPageTableViewController.m */; };
 		E1DA8C9D263EBA8C00C78485 /* MessagePageTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1DA8C9C263EBA8C00C78485 /* MessagePageTableViewController.m */; };
+		E1FCC9F0265E82C300B2312B /* CategoryPredicate.m in Sources */ = {isa = PBXBuildFile; fileRef = E1FCC9EF265E82C300B2312B /* CategoryPredicate.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -96,6 +97,8 @@
 		E1DA8C99263EBA2900C78485 /* FindPageTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FindPageTableViewController.m; sourceTree = "<group>"; };
 		E1DA8C9B263EBA8C00C78485 /* MessagePageTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MessagePageTableViewController.h; sourceTree = "<group>"; };
 		E1DA8C9C263EBA8C00C78485 /* MessagePageTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MessagePageTableViewController.m; sourceTree = "<group>"; };
+		E1FCC9EE265E82C300B2312B /* CategoryPredicate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CategoryPredicate.h; sourceTree = "<group>"; };
+		E1FCC9EF265E82C300B2312B /* CategoryPredicate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CategoryPredicate.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -249,6 +252,8 @@
 				E1D2750B264A6127004EC053 /* WBCellFrame.m */,
 				E1434F83264C353800C21028 /* UserInformation.h */,
 				E1434F84264C353900C21028 /* UserInformation.m */,
+				E1FCC9EE265E82C300B2312B /* CategoryPredicate.h */,
+				E1FCC9EF265E82C300B2312B /* CategoryPredicate.m */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -336,6 +341,7 @@
 				E14245AF263BBC5D00DCFF3B /* AppDelegate.m in Sources */,
 				E1D2750626490429004EC053 /* WBCell.m in Sources */,
 				E14245C9263BBC8600DCFF3B /* TabBarController.m in Sources */,
+				E1FCC9F0265E82C300B2312B /* CategoryPredicate.m in Sources */,
 				E1DA8C9A263EBA2900C78485 /* FindPageTableViewController.m in Sources */,
 				E14245C0263BBC5E00DCFF3B /* main.m in Sources */,
 				E1D275092649542B004EC053 /* MyCollectionsTableViewController.m in Sources */,

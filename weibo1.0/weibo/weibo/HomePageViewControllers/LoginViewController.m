@@ -74,7 +74,7 @@
             dispatch_sync(dispatch_get_main_queue(), ^{
                 [self.navigationController popToRootViewControllerAnimated:YES];
                 //自动刷新tableView
-                [self.delegate performSelector:@selector(reloadTabelViewData)];
+                [self.delegate performSelector:@selector(LoginViewControllerPop)];
                     });
         }];
         //执行任务
