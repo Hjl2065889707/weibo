@@ -85,16 +85,15 @@
     [formatter1 setDateFormat:@"yyyy MM dd HH:mm:ss"];
     //变为str
     NSString* dateStr = [formatter1 stringFromDate:date];
-    
-    _theWBData.name =  [NSString stringWithFormat:@"%@",userInformation.userId];
-    _theWBData.profileImageURL = @"https://www.baidu.com/img/flexible/logo/pc/result@2.png";
+    //设置theWBData数据
+    _theWBData.name =  [NSString stringWithFormat:@"%@",userInformation.name];
+    _theWBData.profileImageURL = [NSString stringWithFormat:@"%@",userInformation.headImageURL ];
     _theWBData.creatTime = dateStr;
     _theWBData.location = @"广州";
     _theWBData.text = _textView.text;
     if (_theWBData.pictureNumber.intValue != 1 ) {
         _theWBData.pictureNumber = @0;
     }
-    
     _theWBData.pictureURLs = [NSArray array];
     _theWBData.attitudesCount = @666;
     _theWBData.commentsCount = @666;
@@ -107,36 +106,31 @@
         _theWBData.middlePictureURL = @"nil";
     }
     _theWBData.wbId = @0;
-    
+    //将该条微博添加到array中并保存到本地
     [_postedWBArray addObject:[TheWbData initDicitonaryWithTheWbData:_theWBData] ];
     NSArray *tempArray = [NSArray arrayWithArray:_postedWBArray];
+    //提示是否发送成功
     NSString *alertStr = @"";
     if ([tempArray writeToFile:userInformation.postedWBFilePath atomically:NO]) {
         alertStr = @"发送成功!";
     }else{
         alertStr = @"发送失败!";
     }
-    //提示是否发送成功
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"提示" message:alertStr preferredStyle:UIAlertControllerStyleAlert];
     [self presentViewController:alertController animated:YES completion:nil];
     //暂停1秒来显示alertController
     [NSThread sleepForTimeInterval:1];
     [self dismissViewControllerAnimated:YES completion:^{
-        //自动回到homePage页面，并刷新数据
+        //自动回到homePage页面，并刷新数据
         [self.navigationController popViewControllerAnimated:YES];
-        [self.delegate performSelector:@selector(reloadTabelViewData)];
+        [self.delegate performSelector:@selector(PostWBViewControllerPop)];
     }];
-
-    
 }
-
-
-
-
 
 #pragma mark - textViewDelegate
 - (void)textViewDidChange:(UITextView *)textView
 {
+    //没有文字内容不能发送
     if (_textView.text.length > 0) {
         self.navigationItem.rightBarButtonItem.enabled = YES;
         _placeHolder.hidden = YES;
@@ -150,25 +144,26 @@
 #pragma mark - SelectPictureButtonMethod
 - (void)selectPictureButtonPressed
 {
-    //选择图片的按钮
+    //通过UIImagePickerController选择图片
     UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
     imagePicker.delegate = self;
     imagePicker.allowsEditing = NO;
     imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
     [self presentViewController:imagePicker animated:YES completion:nil];
-    
 }
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey,id> *)info
 {
+    //只允许选择图片类型
     if ([ [info objectForKey:UIImagePickerControllerMediaType] isEqualToString:@"public.image"]) {
         NSURL *imageURL = [info objectForKey:UIImagePickerControllerImageURL];
         NSString *URLString = [NSString stringWithFormat:@"%@",imageURL];
+        //设置theWBData中的数据
         _theWBData.originalPictureURL = URLString;
         _theWBData.middlePictureURL = URLString;
-        NSLog(@"URL = %@",URLString);
         _theWBData.pictureNumber = @1;
         _theWBData.pictureData = [NSData dataWithContentsOfURL:imageURL];
+        //图片预览
         _imageView.image = [UIImage imageWithData:_theWBData.pictureData];
         [self dismissViewControllerAnimated:YES completion:nil];
     }

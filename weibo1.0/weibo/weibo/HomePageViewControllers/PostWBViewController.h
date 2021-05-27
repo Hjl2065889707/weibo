@@ -9,7 +9,7 @@
 
 @protocol PostWBViewControllerDelegate <NSObject>
 
-- (void)reloadTabelViewData;
+- (void)PostWBViewControllerPop;
 
 @end
 NS_ASSUME_NONNULL_BEGIN

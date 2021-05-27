@@ -15,6 +15,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property(strong,nonatomic)NSString *collectFilePath;
 @property(strong,nonatomic)NSString *postedWBFilePath;
 @property(strong,nonatomic)NSString *searchHistoryFilePath;
+@property(strong,nonatomic)NSString *name;
+@property(strong,nonatomic)NSURL *headImageURL;
+
 
 
 

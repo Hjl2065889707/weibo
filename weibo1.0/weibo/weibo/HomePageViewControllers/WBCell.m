@@ -16,7 +16,6 @@
 - (void)awakeFromNib {
     [super awakeFromNib];
     // Initialization code 该方法通过xib生成cell时会调用
-    
 }
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -24,7 +23,6 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     return  self;
 }
-
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
@@ -34,7 +32,6 @@
 #pragma mark - initSubviews
 -(void)loadSubviews
 {
-
     //昵称
     UITextView *nameTextView = [[UITextView alloc] init];
     nameTextView.text = self.theWBData.name;
@@ -77,14 +74,15 @@
     attitudeNumber.scrollEnabled = NO;
     attitudeNumber.font = [UIFont fontWithName:@"Arial" size:15];
     [self.contentView addSubview:attitudeNumber];
+    
     //文字内容
     UITextView *mainTextView = [[UITextView alloc] init];
     mainTextView.frame = self.wbCellFrame.mainTextViewFrame;
     mainTextView.editable = NO;
     mainTextView.scrollEnabled = NO;
     mainTextView.delegate = self;
-    
     NSMutableAttributedString *mainText = [[NSMutableAttributedString alloc] initWithString:self.theWBData.text attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18]} ];
+    //linkTextArray用来存放text中找到的链接和链接的range
     NSMutableArray *linkTextArray = [NSMutableArray array];
     //利用NSDataDetector来找到文字中的链接,并对链接进行处理
     NSDataDetector *detector = [NSDataDetector dataDetectorWithTypes:NSTextCheckingTypeLink error:nil];
@@ -102,7 +100,7 @@
             [linkTextArray addObject:dic];
         }
     }];
-    //将指定range中的文本替换为linktext
+    //从后往前将指定range中的文本替换为linktext
     while (linkTextArray.count > 0) {
         [mainText replaceCharactersInRange:[[[linkTextArray lastObject] valueForKey:@"range"] rangeValue] withAttributedString:[[linkTextArray lastObject] valueForKey:@"linkText"] ];
         [linkTextArray removeLastObject];
@@ -135,7 +133,7 @@
     }
     [self.contentView addSubview:collectButton];
 
-    //异步加载耗时的view
+    //异步加载耗时的图片view
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         //头像图片
         NSData *headImageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:self.theWBData.profileImageURL]];
@@ -150,12 +148,12 @@
         //图片内容
         if (self.theWBData.pictureNumber.intValue == 1) {
             NSData *pictureImageData = [[NSData alloc] init];
+            //根据userId切换pictureImageData的初始化形式（id=123456则说明该微博是自己发的）
             if (self.theWBData.userId.intValue == 123456) {
                 pictureImageData = self.theWBData.pictureData;
             }else{
                 pictureImageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:self.theWBData.middlePictureURL] ];
             }
-            
                 UIImage *mainImage = [[UIImage alloc] initWithData:pictureImageData];
                 //回到主线程对view进行操作
                 dispatch_sync(dispatch_get_main_queue(), ^{
@@ -188,7 +186,6 @@
                 if (self.wbCellFrame.picturesFrameArray.count > 1) {
                     for (int j = 0; j < self.theWBData.pictureNumber.intValue; j++) {
                         UIImageView *imageView = [[UIImageView alloc] initWithImage:[imageArray objectAtIndex:j] ];
-                        //设置imageView的contentMode属性为UIViewContentModeScaleAspectFill，能保证图片比例不变，填充整个ImageView，但可能只有部分图片显示出来
                         imageView.contentMode = UIViewContentModeScaleAspectFill;
                         imageView.clipsToBounds = YES;
                         imageView.frame =
@@ -203,8 +200,7 @@
 
 
 
-#pragma mark -ButtonMethod
-
+#pragma mark - ButtonMethod
 - (void)collectButtonClick:(UIButton *)button
 {
     //获取当前用户信息，用于获取文件目录
@@ -239,16 +235,11 @@
     button.selected = !button.selected;
 }
 
-
-
-
 #pragma mark - UITextViewDelegate
 - (BOOL)textView:(UITextView *)textView shouldInteractWithURL:(NSURL *)URL inRange:(NSRange)characterRange interaction:(UITextItemInteraction)interaction
 {
     [_delegate performSelector:@selector(poenLinkText:) withObject:URL];
     return NO;
 }
-
-
 
 @end

@@ -30,18 +30,21 @@
     //设置delegate
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
-    //cell的点击事件
+    //用来捕获cell的点击事件
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tableViewClick:)];
     tapGesture.delegate = self;
     [self.tableView addGestureRecognizer:tapGesture];
-
+    //UIBarButtonItem
+    UIBarButtonItem *postButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"post.png"] style:UIBarButtonItemStyleDone target:self action:@selector(postWB)];
+    UIBarButtonItem *reloadButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"reload.png"] style:UIBarButtonItemStyleDone target:self action:@selector(reloadWBData)];
+    self.navigationItem.leftBarButtonItem = reloadButton;
+    self.navigationItem.rightBarButtonItem = postButton;
     //下拉刷新
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
     refreshControl.attributedTitle = [[NSAttributedString alloc]initWithString:@"下拉刷新"];
     [refreshControl addTarget:self action:@selector(reloadWBData) forControlEvents:UIControlEventValueChanged];
     self.tableView.refreshControl = refreshControl;
-    
-    //searchbar
+    //搜索栏
     self.searchController = [[UISearchController alloc] initWithSearchResultsController:nil];//初始化
     self.searchController.searchResultsUpdater = self;//设置代理对象
     self.searchController.searchBar.delegate = self;
@@ -51,24 +54,13 @@
                    self.searchController.searchBar.frame.origin.y,
                    self.searchController.searchBar.frame.size.width, 44.0);//设置frame
     self.tableView.tableHeaderView = self.searchController.searchBar;
-    
-
-    
-    //UIBarButtonItem
-    UIBarButtonItem *postButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"post.png"] style:UIBarButtonItemStyleDone target:self action:@selector(postWB)];
-    UIBarButtonItem *reloadButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"reload.png"] style:UIBarButtonItemStyleDone target:self action:@selector(reloadWBData)];
-    
-    self.navigationItem.leftBarButtonItem = reloadButton;
-    self.navigationItem.rightBarButtonItem = postButton;
-
-    //loadCategoryScrollView
+    //分类栏
     [self loadCategoryScrollView];
-    
     //定时刷新
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [NSThread sleepForTimeInterval:500];
+        [NSThread sleepForTimeInterval:600];
         dispatch_sync(dispatch_get_main_queue(), ^{
-            [self.tableView reloadData];
+            [self reloadWBData];
                 });
     });
 }
@@ -76,6 +68,8 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [self initAndCheckAccessToken];
+    _slider.hidden = NO;
+    _categoryScrollView.hidden = NO;
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -83,6 +77,11 @@
     self.tableView.frame = CGRectMake(0, 90, self.view.bounds.size.width, self.view.bounds.size.height-100);
 }
 
+- (void)viewWillDisappear:(BOOL)animated
+{
+    _slider.hidden = YES;
+    _categoryScrollView.hidden = YES;
+}
 #pragma mark - loadCategoryScrollView
 - (void)loadCategoryScrollView
 {
@@ -106,7 +105,6 @@
     [allButton setTitleColor:[UIColor darkTextColor] forState:UIControlStateNormal];
     [allButton addTarget:self action:@selector(allButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     allButton.frame = CGRectMake(30, 0, 70, 35);
-//    allButton.backgroundColor = [UIColor greenColor];
     [_categoryScrollView addSubview:allButton];
     
     UIButton *plmmButton = [UIButton buttonWithType:UIButtonTypeSystem];
@@ -115,7 +113,6 @@
     [plmmButton setTitleColor:[UIColor darkTextColor] forState:UIControlStateNormal];
     [plmmButton addTarget:self action:@selector(categoryButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     plmmButton.frame = CGRectMake(130, 0, 70, 35);
-//    plmmButton.backgroundColor = [UIColor greenColor];
     [_categoryScrollView addSubview:plmmButton];
     
     UIButton *sameCityButton = [UIButton buttonWithType:UIButtonTypeSystem];
@@ -124,7 +121,6 @@
     [sameCityButton setTitleColor:[UIColor darkTextColor] forState:UIControlStateNormal];
     [sameCityButton addTarget:self action:@selector(categoryButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     sameCityButton.frame = CGRectMake(230, 0, 70, 35);
-//    sameCityButton.backgroundColor = [UIColor greenColor];
     [_categoryScrollView addSubview:sameCityButton];
     
     UIButton *digitButton = [UIButton buttonWithType:UIButtonTypeSystem];
@@ -133,7 +129,6 @@
     [digitButton setTitleColor:[UIColor darkTextColor] forState:UIControlStateNormal];
     [digitButton addTarget:self action:@selector(categoryButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     digitButton.frame = CGRectMake(330, 0, 70, 35);
-//    digitButton.backgroundColor = [UIColor greenColor];
     [_categoryScrollView addSubview:digitButton];
     
     UIButton *sportButton = [UIButton buttonWithType:UIButtonTypeSystem];
@@ -142,7 +137,6 @@
     [sportButton setTitleColor:[UIColor darkTextColor] forState:UIControlStateNormal];
     [sportButton addTarget:self action:@selector(categoryButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     sportButton.frame = CGRectMake(430, 0, 70, 35);
-//    sportButton.backgroundColor = [UIColor greenColor];
     [_categoryScrollView addSubview:sportButton];
     
     UIButton *petButton = [UIButton buttonWithType:UIButtonTypeSystem];
@@ -151,23 +145,14 @@
     [petButton setTitleColor:[UIColor darkTextColor] forState:UIControlStateNormal];
     [petButton addTarget:self action:@selector(categoryButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     petButton.frame = CGRectMake(530, 0, 70, 35);
-//    sportButton.backgroundColor = [UIColor greenColor];
     [_categoryScrollView addSubview:petButton];
-    
-   
-    
 }
-#pragma mark -sliderMethod
-- (void)SliderChange:(UISlider *)slider
-{
-    _categoryScrollView.contentOffset = CGPointMake((_categoryScrollView.contentSize.width-_categoryScrollView.frame.size.width)*slider.value, 0);
-}
-#pragma mark -ScrollViewButtonMethod
+
+#pragma mark ScrollViewButtonMethod
 - (void)allButtonClick:(UIButton *)button
 {
     _useSearchArrayAsDataSource = NO;
     [self.tableView reloadData];
-
 }
 
 - (void)categoryButtonClick:(UIButton *)button
@@ -187,13 +172,17 @@
     }else if ([button.titleLabel.text isEqualToString:@"萌宠"]){
         predicate = categoryPredicate.petPredicate;
     }
-    
     _searchResultDataArray = [_dataArray filteredArrayUsingPredicate:predicate];
-    self.tableView.scrollEnabled = YES;
+    self.searchController.active = NO;
     [self.tableView reloadData];
 }
+#pragma mark sliderMethod
+- (void)SliderChange:(UISlider *)slider
+{
+    _categoryScrollView.contentOffset = CGPointMake((_categoryScrollView.contentSize.width-_categoryScrollView.frame.size.width)*slider.value, 0);
+}
 
-#pragma mark - TableDelegates
+#pragma mark - TableViewDelegates
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
@@ -213,13 +202,13 @@
     if(!cell){//如果取不到就让cell=新建cell
         cell = [[WBCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"id"];
     }
-    //移除cell里面的imageView
+    //移除cell里面的View
     for(UIView *uv in cell.contentView.subviews){
             [uv removeFromSuperview];
     }
     //设置cell被选中时不变灰
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    //根据搜索栏是否激活设置theWBData
+    //根据搜索栏是否激活设置theWBData的数据源
     if (_useSearchArrayAsDataSource == NO) {
         cell.theWBData = _dataArray[indexPath.row];
     }else{
@@ -233,7 +222,6 @@
     cell.wbCellFrame = _wbCellFrame;
     //创建cell的子view的
     [cell loadSubviews];
-
      return cell;
 }
 
@@ -242,7 +230,8 @@
     return _wbCellFrame.attitudeTextViewFrame.origin.y+40;//设置cell的高度
 }
 
-//通过判断最后一个cell是否将要display来加载更多数据（上拉加载）
+
+#pragma mark 上拉加载
  - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSLog(@"row = %lu,count = %lu",indexPath.row,_dataArray.count);
@@ -254,9 +243,6 @@
         NSURLSession *session = [NSURLSession sharedSession];//创建会话对象
         NSString *urlString = [NSString stringWithFormat:@"https://api.weibo.com/2/statuses/home_timeline.json?access_token=%@&max_id=%lu&count=20",self.accessToken.access_token,tempData.wbId.longValue];
         NSURL *url = [NSURL URLWithString:urlString];
-        
-        NSLog(@"%@",url.query);
-        
         NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
         NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
             //将获取到的数据转成字典
@@ -266,7 +252,6 @@
                 NSLog(@"error!!!");
                 return;
             }
-        
             //获取dic中要用到的信息
             NSMutableArray *statuesArray =[NSMutableArray arrayWithArray:[tempDic valueForKey:@"statuses"] ];
             [statuesArray removeObject:statuesArray.firstObject];
@@ -280,19 +265,15 @@
             dispatch_sync(dispatch_get_main_queue(), ^{
                 [self.tableView reloadData];
             });
-            
         }];
         //执行任务
         [dataTask resume];
     }
-    
-    
 }
 
 #pragma mark - cell点击事件
 - (void)tableViewClick:(UIGestureRecognizer *)gestureRecognizer {
     NSLog(@"click!");
-
     CGPoint point = [gestureRecognizer locationInView:self.tableView];
     NSIndexPath *indexpath = [self.tableView indexPathForRowAtPoint:point];
     //获取当前用户信息，用于获取文件目录
@@ -339,7 +320,7 @@
     [self.navigationController pushViewController:postWBViewController animated:YES];
 }
 
-#pragma mark - DataMethod
+#pragma mark - reloadWBData
 
 - (void)reloadWBData
 {
@@ -349,14 +330,13 @@
     NSURL *url = [NSURL URLWithString:urlString];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        
         self.dataArray = [NSMutableArray array];
         //加载自己发的微博
         UserInformation *userInformation = [[UserInformation alloc] init];
         NSLog(@"%@",userInformation.postedWBFilePath);
         NSMutableArray *array = [NSMutableArray arrayWithContentsOfFile:userInformation.postedWBFilePath];
-        
-        for(NSDictionary *dic1 in array.reverseObjectEnumerator)//逆向枚举
+        //逆向枚举
+        for(NSDictionary *dic1 in array.reverseObjectEnumerator)
         {
             TheWbData *theWBData = [[TheWbData alloc] init];
             [theWBData initWithFilePathDictionary:dic1];
@@ -366,7 +346,6 @@
         NSDictionary *tempDic = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
         //获取dic中要用到的信息
         NSArray *statuesArray = [tempDic valueForKey:@"statuses"];
-
         //将传回的数据转换为theWBData对象并存入数组
         for(NSDictionary *dic in statuesArray)
         {
@@ -374,8 +353,6 @@
             [theWBData initWithWebDictionary:dic];
             [self.dataArray addObject:theWBData];
         }
-
-       
         //同步回到主线程
         dispatch_sync(dispatch_get_main_queue(), ^{
             [self.tableView reloadData];
@@ -433,9 +410,7 @@
                     [self initUserInformation];
                 });
               }
-        
     }];
-
     [dataTask resume];
 }
 #pragma mark - initUserInformation
@@ -454,14 +429,9 @@
             dispatch_sync(dispatch_get_main_queue(), ^{
                 [self reloadWBData];
             });
-            
         }];
         [dataTask resume];
-
     }
-
-    
-    
 }
 
 #pragma mark - UISearchBarDelegate
@@ -470,14 +440,12 @@
     
 }
 
-
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
-    NSLog(@"search");
-    
+    //添加搜索记录并隐藏searchHistoryTableView
     [_searchHistoryTableView addWithHistoryString:self.searchController.searchBar.text];
     _searchHistoryTableView.hidden = YES;
-
+    //过滤数据并刷新数据
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"%K CONTAINS %@ || %K CONTAINS %@", @"name",_searchController.searchBar.text, @"text",_searchController.searchBar.text];
     _searchResultDataArray = [_dataArray filteredArrayUsingPredicate:predicate];
     self.tableView.scrollEnabled = YES;
@@ -486,8 +454,10 @@
 
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar
 {
+    //searchBar被激活时切换tableView数据源
     _useSearchArrayAsDataSource = YES;
     self.tableView.scrollEnabled = NO;
+    //初始化并显示SearchHistoryTableView
     BOOL didShowSearchHistoryView = NO;
     for (UIView *view in self.view.subviews) {
         if ([view isKindOfClass:[SearchHistoryTableView class]]) {
@@ -501,7 +471,6 @@
         [self.view addSubview:_searchHistoryTableView];
     }
     _searchHistoryTableView.hidden = NO;
-
 }
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
@@ -513,6 +482,7 @@
     [self.tableView reloadData];
 }
 
+#pragma mark - TheWBCellDelegate
 - (void)poenLinkText:(NSURL *)url
 {
     WebViewController *webViewController = [[WebViewController alloc] init];
@@ -520,16 +490,19 @@
     [self.navigationController pushViewController:webViewController animated:YES];
 }
 
-#pragma mark - postWBViewControllerDelegate&LoginViewControllerDelegate
+#pragma mark LoginViewControllerDelegate
 - (void)LoginViewControllerPop{
-    [self reloadWBData];
+    [self initAndCheckAccessToken];
     _slider.hidden = NO;
     _categoryScrollView.hidden = NO;
 }
+#pragma mark postWBViewControllerDelegate
+- (void)PostWBViewControllerPop
+{
+    [self reloadWBData];
+}
 
-
-
-#pragma mark - SearchHistoryTableViewDelegate
+#pragma mark SearchHistoryTableViewDelegate
 -(void)replaceSearchBarTextWithString:(NSString *)str
 {
     self.searchController.searchBar.text = str;
