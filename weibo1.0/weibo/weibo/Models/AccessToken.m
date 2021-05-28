@@ -13,7 +13,7 @@
 + (instancetype)allocWithZone:(struct _NSZone *)zone
 {
     static id instance = nil;
-    if(instance == nil){
+    if(!instance){
         instance = [super allocWithZone:zone];
     }
     return instance;

@@ -120,7 +120,7 @@
     //从文件中获取数据
     self.collectArray = [[NSMutableArray alloc] initWithContentsOfFile:userInformation.collectFilePath];
     //文件为空则创建数组
-    if (self.collectArray == nil) {
+    if (!self.collectArray) {
             self.collectArray = [[NSMutableArray alloc] init];
     }
     TheWbData *wbData = self.theWBData;
@@ -176,7 +176,7 @@
                 NSData *pictureImageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:[[self.theWBData.pictureURLs objectAtIndex:i] valueForKey:@"thumbnail_pic"] ] ];
                 UIImage *image = [[UIImage alloc] initWithData:pictureImageData];
                 //image加载失败的时候显示加载失败的图标
-                if (image == nil) {
+                if (!image) {
                     image = [UIImage imageNamed:@"loadFail"];
                 }
                 [imageArray addObject:image];
@@ -208,7 +208,7 @@
     //从文件中获取数据
     self.collectArray = [[NSMutableArray alloc] initWithContentsOfFile:userInformation.collectFilePath];
     //文件为空则创建数组
-    if (self.collectArray == nil) {
+    if (!self.collectArray) {
             self.collectArray = [[NSMutableArray alloc] init];
     }
     TheWbData *wbData = self.theWBData;
@@ -238,7 +238,7 @@
 #pragma mark - UITextViewDelegate
 - (BOOL)textView:(UITextView *)textView shouldInteractWithURL:(NSURL *)URL inRange:(NSRange)characterRange interaction:(UITextItemInteraction)interaction
 {
-    [_delegate performSelector:@selector(poenLinkText:) withObject:URL];
+    [_delegate performSelector:@selector(openLinkText:) withObject:URL];
     return NO;
 }
 

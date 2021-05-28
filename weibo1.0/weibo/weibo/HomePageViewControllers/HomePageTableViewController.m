@@ -281,7 +281,7 @@
     //从文件中获取数据
     self.browseHistoryArray = [[NSMutableArray alloc] initWithContentsOfFile:userInformation.browseHistoryFilePath];
     //文件为空则创建数组
-    if (self.browseHistoryArray == nil) {
+    if (!self.browseHistoryArray) {
             self.browseHistoryArray = [[NSMutableArray alloc] init];
     }
     //删除重复的微博(根据用户名和微博发布时间判断)
@@ -375,7 +375,7 @@
     _accessToken = [[AccessToken  alloc] init];
     _accessToken.access_token = accessTokenString;
     //文件为空则跳转到登陆界面
-    if (_accessToken.access_token == nil) {
+    if (!_accessToken.access_token) {
         LoginViewController *loginViewController = [[LoginViewController alloc] init];
         loginViewController.delegate = self;
         [self.navigationController pushViewController:loginViewController animated:YES];
@@ -388,7 +388,7 @@
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [request setHTTPMethod:@"POST"];//设置请求的方法为POST方法
     NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        if (data == nil) {
+        if (!data) {
             return;
         }
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
@@ -416,7 +416,7 @@
 #pragma mark - initUserInformation
 - (void)initUserInformation
 {
-    if (_userInformation == nil) {
+    if (!_userInformation) {
         //根据access_token获得当前用户id，并创建UserInformation单例
         _userInformation = [[UserInformation alloc] init];
         NSURLSession *session = [NSURLSession sharedSession];//创建会话对象
@@ -483,7 +483,7 @@
 }
 
 #pragma mark - TheWBCellDelegate
-- (void)poenLinkText:(NSURL *)url
+- (void)openLinkText:(NSURL *)url
 {
     WebViewController *webViewController = [[WebViewController alloc] init];
     webViewController.url = url;

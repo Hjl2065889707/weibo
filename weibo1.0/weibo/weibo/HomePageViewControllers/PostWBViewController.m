@@ -74,7 +74,7 @@
     UserInformation *userInformation = [[UserInformation alloc] init];
     //初始化_postedWBArray
     _postedWBArray = [NSMutableArray arrayWithContentsOfFile:userInformation.postedWBFilePath];
-    if (_postedWBArray == nil) {
+    if (!_postedWBArray) {
         _postedWBArray = [NSMutableArray array];
     }
     
@@ -99,10 +99,10 @@
     _theWBData.commentsCount = @666;
     _theWBData.repostsCount = @666;
     _theWBData.userId = @123456 ;
-    if (_theWBData.originalPictureURL == nil) {
+    if (!_theWBData.originalPictureURL) {
         _theWBData.originalPictureURL = @"nil";
     }
-    if (_theWBData.middlePictureURL == nil) {
+    if (!_theWBData.middlePictureURL) {
         _theWBData.middlePictureURL = @"nil";
     }
     _theWBData.wbId = @0;

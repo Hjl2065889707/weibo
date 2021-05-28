@@ -13,7 +13,7 @@
 
 @protocol TheWBCellDelegate <NSObject>
 
-- (void)poenLinkText:(NSURL *)url;
+- (void)openLinkText:(NSURL *)url;
 
 @end
 

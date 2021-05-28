@@ -80,7 +80,7 @@
     self.dataSource = self;
     _userInformation = [[UserInformation alloc] init];
     _searchHistoryArray = [NSMutableArray arrayWithContentsOfFile:_userInformation.searchHistoryFilePath];
-    if (_searchHistoryArray == nil) {
+    if (!_searchHistoryArray) {
         _searchHistoryArray = [NSMutableArray array];
     }
 }

@@ -73,7 +73,7 @@
     return _wbCellFrame.attitudeTextViewFrame.origin.y+40;//设置cell的高度
 }
 
-- (void)poenLinkText:(NSURL *)url
+- (void)openLinkText:(NSURL *)url
 {
     WebViewController *webViewController = [[WebViewController alloc] init];
     webViewController.url = url;

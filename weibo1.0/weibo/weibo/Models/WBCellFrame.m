@@ -39,7 +39,7 @@
         UIImage *mainImage = [[UIImage alloc] initWithData:pictureImageData];
         mainImageHeight = 250.0f;
         mainImageWidth = (mainImage.size.width/mainImage.size.height)*250;
-        if (mainImage == nil) {
+        if (!mainImage) {
             mainImageWidth = 250;
         }
         _mainImageViewFrame = CGRectMake(20,_mainTextViewFrame.origin.y+mainTextHeight+20,mainImageWidth ,mainImageHeight);
